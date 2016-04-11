@@ -44,25 +44,26 @@ class RedisBrain(object):
 class Robot(object):
     def __init__(self):
         self.client = SlackClient(SLACK_TOKEN)
-        self.brain = RedisBrain()
+#        self.brain = RedisBrain()
         self.apps, self.docs = self.load_apps()
 
     def load_apps(self):
-        docs = ['='*14, '홍모아 사용방법', '='*14]
+        docs = ['='*14, '생협봇  사용방법', '='*14]
         apps = {}
 
         for name in APPS:
             app = import_module('apps.%s' % name)
-            docs.append(
-                '!%s: %s' % (', '.join(app.run.commands), app.run.__doc__)
-            )
+            if name != 'reboot':
+                docs.append(
+                    '!%s: %s' % (', '.join(app.run.commands), app.run.__doc__)
+                )
             for command in app.run.commands:
                 apps[command] = app
 
         return apps, docs
 
     def handle_messages(self, messages):
-        for channel, text in messages:
+        for channel, text, user in messages:
             command, payloads = self.extract_command(text)
             if not command:
                 continue
@@ -70,16 +71,17 @@ class Robot(object):
             app = self.apps.get(command, None)
             if not app:
                 continue
-
-            pool.apply_async(func=app.run, args=(self, channel, payloads))
+            pool.apply_async(func=app.run, args=(self, channel, payloads, user))
 
     def extract_messages(self, events):
         messages = []
         for e in events:
+            #print e
+            user = e.get('user','')
             channel = e.get('channel', '')
             text = e.get('text', '')
             if channel and text:
-                messages.append((channel, text))
+                messages.append((channel, text, user))
         return messages
 
     def extract_command(self, text):

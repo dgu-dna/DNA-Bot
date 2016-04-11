@@ -27,11 +27,11 @@ def on_command(commands):
 
         @wraps(func)
         def _decorator(*args, **kwargs):
-            robot, channel, message = args
+            robot, channel, message, user = args
             if commands:
                 tokens = _extract_tokens(message)
                 try:
-                    channel, message = func(robot, channel, tokens)
+                    channel, message = func(robot, channel, tokens, user)
                     if channel:
                         robot.client.rtm_send_message(channel, message)
                         return message
