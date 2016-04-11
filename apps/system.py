@@ -14,10 +14,12 @@ def run(robot, channel, tokens, user):
         subprocess.call(['/home/simneol/hongmoa/reboot.sh'])
     elif str(tokens[0]) == 'PULL':
         subprocess.call(['/home/simneol/hongmoa/git_pull.sh'])
+        return channel, 'Pulled from github'
     elif str(tokens[0]) == 'PUSH':
-        arg=''
+        arg = ''
         for token in tokens:
             arg+=str(token)
-        arg=arg[4:]
-        subprocess.call(['/home/simneol/hongmoa/git_push.sh','"'+arg+'"'])
+        arg = arg[4:-1]
+        subprocess.call(['/home/simneol/hongmoa/git_push.sh',arg])
+        return channel, 'Pushed to github'
     return channel, '...'
