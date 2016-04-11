@@ -1,12 +1,12 @@
-[![Build Status](https://travis-ci.org/haandol/hongmoa.svg?branch=master)](https://travis-ci.org/haandol/hongmoa)
+[![works badge](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
 
-# Hongmoa
+# DNA Bot
 
 A Slack(slack.com) for Pythonistas
 
 ## Dependencies
 
-Hongmoa requires [gevent](https://github.com/gevent/gevent), [redis](https://github.com/andymccurdy/redis-py), [slackclient](https://github.com/slackhq/python-slackclient).
+DNA Bot requires [Hongmoa](https://github.com/haandol/hongmoa)
 
 ## Configuration
 
