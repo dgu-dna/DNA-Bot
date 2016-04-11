@@ -53,9 +53,9 @@ class Robot(object):
 
         for name in APPS:
             app = import_module('apps.%s' % name)
-            if name != 'reboot':
+            if name != 'system':
                 docs.append(
-                    '!%s: %s' % (', '.join(app.run.commands), app.run.__doc__)
+                '   !%s: %s' % (', '.join(app.run.commands), app.run.__doc__)
                 )
             for command in app.run.commands:
                 apps[command] = app
