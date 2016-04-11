@@ -18,8 +18,9 @@ def run(robot, channel, tokens, user):
     elif str(tokens[0]) == 'PUSH':
         arg = ''
         for token in tokens:
-            arg+=str(token)
+            arg+=str(token)+' '
         arg = arg[4:-1]
         subprocess.call(['/home/simneol/hongmoa/git_push.sh',arg])
-        return channel, 'Pushed to github'
+#        return channel, 'Pushed to github'
+        return channel, arg
     return channel, '...'
