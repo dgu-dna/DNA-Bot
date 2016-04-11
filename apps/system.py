@@ -10,6 +10,6 @@ def run(robot, channel, tokens, user):
         return channel, '일반 사용자는 이용할 수 없습니다'
     if len(tokens) < 1:
         return channel, 'need arguments'
-    if str(token[0]) == 'REBOOT':
-        subprocess.call(["sudo","/home/simneol/hongmoa/reboot.sh"])
+    if str(tokens[0]) == 'REBOOT':
+        subprocess.call(['/home/simneol/hongmoa/reboot.sh'])
     return channel, 'REBOOTING...'
