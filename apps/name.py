@@ -7,7 +7,9 @@ from subprocess import check_output
 
 @on_command(['기억','ㄱㅇ','rd'])
 def run(robot, channel, tokens, user):
-    '''미구현 기능입니다'''
+    '''어떠한 단어에 대한 설명을 기억합니다.
+    !기억 <기억할단어> <기억할 문장>
+    기억했던 모든 단어는 "!기억 ?"를 입력 시 출력합니다.'''
     url='https://slack.com/api/users.info?token=xoxp-26726533763-26813510823-33040779782-4d90d5301c&user='+str(user)+'&pretty=1'
     response = urllib.urlopen(url)
     data=json.loads(response.read())
@@ -24,10 +26,10 @@ def run(robot, channel, tokens, user):
                 msg+=s+' || '
             msg = msg[:-8]
             return channel, msg
-        time = line = f.readline()
         if not f:
             msg=str(tokens[0])+'에 대해 기억나는게 없어요 ㅠㅡㅠ'
             return channel, msg
+        time = line = f.readline()
         while line:
             line=f.readline()
             full_line+=line

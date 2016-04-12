@@ -32,7 +32,7 @@ def run(robot, channel, tokens, user):
             is_lunch=False
     if is_lunch:
         message=':sunny:'+strftime('%m월 %d일(%a)',localtime())+'중식입니다 :sunny:\n'
-        course=list([set([6,7,8,9]),set([20]),set([24,25])])
+        course=list([set([6,7,8,9]),set([20]),set([24])])
     else:
         message=':star2:'+strftime('%m월 %d일(%a)',localtime())+'석식입니다:star2:\n'
         course=list([set([10,11,12,13]),set([22]),set([27,28])])
@@ -52,7 +52,11 @@ def run(robot, channel, tokens, user):
                 for line in remove_html_tags(str(menu)).split('\n'):
                     if line.rstrip() and printed_num < course_num:
                         printed_num+=1
-                        message += line +'\n'
+                        message += line
+                        if menu_num<20 and menu_num % 4 != 1:
+                            message += ' || '
+                        else:
+                            message += '\n'
     return channel, message
 
 if "__main__" == __name__:
