@@ -12,6 +12,7 @@ def run(robot, channel, tokens, user):
         return channel, 'need arguments'
     if str(tokens[0]) == 'REBOOT':
         subprocess.call(['/home/simneol/hongmoa/reboot.sh'])
+        return channel, 'Rebooting...'
     elif str(tokens[0]) == 'PULL':
         subprocess.call(['/home/simneol/hongmoa/git_pull.sh'])
         return channel, 'Pulled from github'
