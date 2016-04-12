@@ -6,6 +6,7 @@ import re
 import urllib
 from bs4 import BeautifulSoup
 from datetime import datetime
+from time import localtime, strftime
 def remove_html_tags(data):
     p=re.compile(r'<.*?>',re.M)
     #return p.findall(data)
@@ -30,10 +31,10 @@ def run(robot, channel, tokens, user):
         elif tokens[0] in set(['석식','ㅅㅅ','저녁','tt','ws']):
             is_lunch=False
     if is_lunch:
-        message=':sunny:지금은 중식 시간입니다:sunny:\n'
+        message=':sunny:'+strftime('%m월 %d일(%a)',localtime())+'중식입니다 :sunny:\n'
         course=list([set([6,7,8,9]),set([20]),set([24,25])])
     else:
-        message=':star2:지금은 석식 시간입니다:star2:\n'
+        message=':star2:'+strftime('%m월 %d일(%a)',localtime())+'석식입니다:star2:\n'
         course=list([set([10,11,12,13]),set([22]),set([27,28])])
     menu_num=0
     for menu in menus:
