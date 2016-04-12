@@ -10,8 +10,8 @@ from subprocess import check_output
 
 @on_command(['기억삭제', 'ㄱㅇㅅㅈ', 'rdtw'])
 def run(robot, channel, tokens, user):
-    path = '/home/simneol/hongmoa/apps/name_cache/'+str(tokens[0])
     if len(tokens) == 1:
+        path = '/home/simneol/hongmoa/apps/name_cache/'+str(tokens[0])
         msg = ''
         if os.path.isfile(path):
             os.remove(path)
