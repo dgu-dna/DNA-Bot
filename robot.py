@@ -76,7 +76,6 @@ class Robot(object):
     def extract_messages(self, events):
         messages = []
         for e in events:
-            #print e
             user = e.get('user','')
             channel = e.get('channel', '')
             text = e.get('text', '')
