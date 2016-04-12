@@ -7,7 +7,7 @@ def run(robot, channel, tokens, user):
     ''' 일반 사용자는 이용할 수 없습니다'''
     rootuser=set(['U0SPF91EE','U0SPXF0Q7'])
     if str(user) not in rootuser:
-        return channel, '일반 사용자는 이용할 수 없습니다'
+        return channel, 'Permission denied'
     if len(tokens) < 1:
         return channel, 'need arguments'
     if str(tokens[0]) == 'REBOOT':
