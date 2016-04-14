@@ -8,7 +8,7 @@ import os
 from subprocess import check_output
 
 
-@on_command(['기억삭제', 'ㄱㅇㅅㅈ', 'rdtw'])
+@on_command(['!기억삭제', '!ㄱㅇㅅㅈ', '!rdtw'])
 def run(robot, channel, tokens, user):
     if len(tokens) == 1:
         path = '/home/simneol/hongmoa/apps/name_cache/'+str(tokens[0])

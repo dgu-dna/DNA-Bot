@@ -16,7 +16,7 @@ from settings import APPS, SLACK_TOKEN, REDIS_URL
 
 pool = Pool(20)
 
-CMD_PREFIX = '!'
+CMD_PREFIX = ''
 logger = logging.getLogger()
 
 
@@ -55,7 +55,7 @@ class Robot(object):
             app = import_module('apps.%s' % name)
             if name != 'system':
                 docs.append(
-                '   !%s: %s' % (', '.join(app.run.commands), app.run.__doc__)
+                '   %s: %s' % (', '.join(app.run.commands), app.run.__doc__)
                 )
             for command in app.run.commands:
                 apps[command] = app
@@ -84,14 +84,14 @@ class Robot(object):
         return messages
 
     def extract_command(self, text):
-        if CMD_PREFIX != text[0]:
-            return (None, None)
+        #if CMD_PREFIX != text[0]:
+        #    return (None, None)
 
         tokens = text.split(' ', 1)
         if 1 < len(tokens):
-            return tokens[0][1:], tokens[1]
+            return tokens[0], tokens[1]
         else:
-            return (text[1:], '')
+            return (text, '')
 
     def run(self):
         if self.client.rtm_connect():

@@ -5,7 +5,7 @@ from time import localtime, strftime
 import json, urllib, os
 from subprocess import check_output
 
-@on_command(['기억','ㄱㅇ','rd'])
+@on_command(['!기억','!ㄱㅇ','!rd'])
 def run(robot, channel, tokens, user):
     '''어떠한 단어에 대한 설명을 기억합니다.
     !기억 <기억할단어> <기억할 문장>

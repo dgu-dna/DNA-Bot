@@ -10,7 +10,7 @@ def isNum(s):
     except ValueError:
         return False
 
-@on_command(['메모삭제', 'ㅁㅁㅅㅈ', 'aatw'])
+@on_command(['!메모삭제', '!ㅁㅁㅅㅈ', '!aatw'])
 def run(robot, channel, tokens, user):
     '''메모한 내용을 삭제합니다.\n
     !메모삭제 <메모 번호>
