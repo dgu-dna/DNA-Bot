@@ -40,7 +40,7 @@ def run(robot, channel, tokens, user):
             while line:
                 line=f.readline()
                 full_line+=line
-        full_line='가장 최근에 '+str(data['user']['name'])+'이(가) '+strftime('%Y-%m-%d %H:%M:%S',localtime())+'에 알려줬어요!\n'+full_line
+        full_line='가장 최근에 '+str(data['user']['name'])[:1]+'·'+str(data['user']['name'])[1:]+'이(가) '+strftime('%Y-%m-%d %H:%M:%S',localtime())+'에 알려줬어요!\n'+full_line
         desc=''
         for i in range(1,len(tokens)):
             desc+=tokens[i]+' '
@@ -49,7 +49,7 @@ def run(robot, channel, tokens, user):
             f.close()
         f=open('/home/simneol/hongmoa/apps/name_cache/'+str(tokens[0]),'w')
         f.write(full_line)
-        msg = str(tokens[0])+'에 대해 '+desc[:-1]+'라고 기억했어요!'
+        msg = str(tokens[0])+'에 대해 '+desc[:-1]+'(이)라고 기억했어요!'
 
 #    msg = str(data['user']['name'])+'이(가) '+strftime('%Y-%m-%d %H:%M:%S',localtime())+'에 불러주었어요!'
     return channel, msg
