@@ -14,11 +14,7 @@ def remove_html_tags(data):
 
 @on_command(['!밥','!학식', '!ㅎㅅ', '!gt'])
 def run(robot, channel, tokens, user):
-    '''오늘의 아리수, 상록원, 기숙사 학생식당의  메뉴를 보여줍니다\n
-    !학식 [중식|ㅈㅅ|점심|wt|석식|ㅅㅅ|저녁|tt|ws]
-    (옵션이 없을경우, 현재 시간에 맞는 메뉴가 보여집니다.)
-    (상록원의 경우 메뉴가 없을경우 코너 순서가 다를 수 있습니다)
-    '''
+    '''학식 메뉴를 보여드려요!'''
     html = urllib.urlopen('http://dgucoop.dongguk.ac.kr/store/store.php?w=4')
     soup = BeautifulSoup(html,'lxml')
     menus = soup.find_all('td',{'bgcolor':'#FFFFFF'})

@@ -3,12 +3,9 @@ from __future__ import unicode_literals
 from decorators import on_command
 from time import localtime, strftime
 
-@on_command(['메모', 'ㅁㅁ', 'aa'])
-
+@on_command(['!메모', '!ㅁㅁ', '!aa'])
 def run(robot, channel, tokens, user):
-    '''입력한 내용을 기억합니다.\n
-    !메모 <기억할 내용>
-    '''
+    '''입력하신 내용을 기억해드려요!'''
     token_count = len(tokens)
     msg=''
     if token_count < 1:

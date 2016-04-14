@@ -48,7 +48,7 @@ class Robot(object):
         self.apps, self.docs = self.load_apps()
 
     def load_apps(self):
-        docs = ['='*14, '생협봇  사용방법\n(원하시는 기능이 있을경우 건의하시면 추가해드립니다!)', '='*14]
+        docs = ['생협봇이 할 수 있는 것들이에요!(새 기능 건의 환영!)', '='*14]
         apps = {}
 
         for name in APPS:

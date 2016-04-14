@@ -12,9 +12,7 @@ def isNum(s):
 
 @on_command(['!메모삭제', '!ㅁㅁㅅㅈ', '!aatw'])
 def run(robot, channel, tokens, user):
-    '''메모한 내용을 삭제합니다.\n
-    !메모삭제 <메모 번호>
-    '''
+    '''메모한 내용을 지워드려요!'''
     token_count = len(tokens)
     msg=''
     if token_count < 1:
