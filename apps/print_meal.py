@@ -12,7 +12,7 @@ def remove_html_tags(data):
     #return p.findall(data)
     return p.sub('\n',data)
 
-@on_command(['!학식', '!ㅎㅅ', '!gt'])
+@on_command(['!밥','!학식', '!ㅎㅅ', '!gt'])
 def run(robot, channel, tokens, user):
     '''오늘의 아리수, 상록원, 기숙사 학생식당의  메뉴를 보여줍니다\n
     !학식 [중식|ㅈㅅ|점심|wt|석식|ㅅㅅ|저녁|tt|ws]
