@@ -63,3 +63,9 @@ venv/
 # Cache
 apps/memo_cache
 apps/name_cache
+
+# Backup File
+*.old
+
+# Symbolic Link
+apps/settings.py

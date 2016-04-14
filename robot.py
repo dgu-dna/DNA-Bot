@@ -1,5 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals
+import os
 import gevent
 import logging
 from gevent.pool import Pool
@@ -7,7 +8,7 @@ from gevent.monkey import patch_all
 from redis import StrictRedis
 from importlib import import_module
 from slackclient import SlackClient
-from settings import APPS, SLACK_TOKEN, REDIS_URL
+from settings import APPS, BOT_NAME, ICON_URL, SLACK_TOKEN, REDIS_URL
 patch_all()
 
 pool = Pool(20)
@@ -44,14 +45,14 @@ class Robot(object):
         self.apps, self.docs = self.load_apps()
 
     def load_apps(self):
-        docs = ['생협봇이 할 수 있는 것들이에요!(새 기능 건의 환영!)', '='*14]
+        docs = ['승규가 할 수 있는 것들이에요! >_<(새 기능 건의 환영)', '='*40]
         apps = {}
 
         for name in APPS:
             app = import_module('apps.%s' % name)
             if name != 'system':
                 docs.append(
-                  '   %s: %s' % (', '.join(app.run.commands), app.run.__doc__)
+                  '   `%s` : %s' % ('`, `'.join(app.run.commands), app.run.__doc__)
                 )
             for command in app.run.commands:
                 apps[command] = app
@@ -91,6 +92,12 @@ class Robot(object):
 
     def run(self):
         if self.client.rtm_connect():
+            if os.path.isfile('rebooting'):
+                file = open('rebooting','r')
+                reboot_chn = file.readline()
+                #self.client.rtm_send_message(reboot_chn,'rebooted successfully')
+		self.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=reboot_chn,text='rebooted successfully')
+                os.remove('rebooting')
             while True:
                 events = self.client.rtm_read()
                 if events:
