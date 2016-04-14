@@ -1,6 +1,7 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from decorators import on_command
+
 
 @on_command(['테스팅'])
 def run(robot, channel, tokens, user):

@@ -1,18 +1,14 @@
 # coding: utf-8
 from __future__ import unicode_literals
-
 import gevent
 import logging
 from gevent.pool import Pool
 from gevent.monkey import patch_all
-patch_all()
-
 from redis import StrictRedis
 from importlib import import_module
 from slackclient import SlackClient
-
 from settings import APPS, SLACK_TOKEN, REDIS_URL
-
+patch_all()
 
 pool = Pool(20)
 
@@ -55,7 +51,7 @@ class Robot(object):
             app = import_module('apps.%s' % name)
             if name != 'system':
                 docs.append(
-                '   %s: %s' % (', '.join(app.run.commands), app.run.__doc__)
+                  '   %s: %s' % (', '.join(app.run.commands), app.run.__doc__)
                 )
             for command in app.run.commands:
                 apps[command] = app
@@ -71,12 +67,13 @@ class Robot(object):
             app = self.apps.get(command, None)
             if not app:
                 continue
-            pool.apply_async(func=app.run, args=(self, channel, payloads, user))
+            arguments = (self, channel, payloads, user)
+            pool.apply_async(func=app.run, args=arguments)
 
     def extract_messages(self, events):
         messages = []
         for e in events:
-            user = e.get('user','')
+            user = e.get('user', '')
             channel = e.get('channel', '')
             text = e.get('text', '')
             if channel and text:
@@ -84,9 +81,8 @@ class Robot(object):
         return messages
 
     def extract_command(self, text):
-        #if CMD_PREFIX != text[0]:
+        # if CMD_PREFIX != text[0]:
         #    return (None, None)
-
         tokens = text.split(' ', 1)
         if 1 < len(tokens):
             return tokens[0], tokens[1]
