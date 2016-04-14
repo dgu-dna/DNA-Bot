@@ -10,18 +10,19 @@ from subprocess import check_output
 
 @on_command(['!기억', '!ㄱㅇ', '!rd'])
 def run(robot, channel, tokens, user):
-    '''어떠한 단어에 대한 설명을 기억합니다.
-    !기억 <기억할단어> <기억할 문장>
-    기억했던 모든 단어는 "!기억 ?"를 입력 시 출력합니다.'''
+    '''단어 기억해드림'''
+    if len(tokens) == 0:
+        msg = '`!기억` 에 대한 사용법은 `!도움 기억`을 통해 볼 수 있음'
+        return channel, msg
     url = 'https://slack.com/api/users.info?token=xoxp-26726533763-26813510823-33040779782-4d90d5301c&user='+str(user)+'&pretty=1'
     response = urllib.urlopen(url)
     data = json.loads(response.read())
-    if os.path.exists('/home/simneol/hongmoa/apps/name_cache/'+str(tokens[0])):
-        f = open('/home/simneol/hongmoa/apps/name_cache/'+str(tokens[0]), 'r')
+    if os.path.exists('./apps/name_cache/'+str(tokens[0])):
+        f = open('./apps/name_cache/'+str(tokens[0]), 'r')
     else:
         f = None
     full_line = ''
-    if len(tokens) < 2:
+    if len(tokens) == 1:
         if str(tokens[0]) == '?':
             all_file = check_output(['ls', '/home/simneol/hongmoa/apps/name_cache/'])
             msg = '제가 여태까지 기억한 것들은 아래와 같아요!\n'
@@ -37,7 +38,7 @@ def run(robot, channel, tokens, user):
             line = f.readline()
             full_line += line
         msg = full_line+'\n'+time
-    else:
+    elif len(tokens)>2:
         if f:
             line = f.readline()
             while line:

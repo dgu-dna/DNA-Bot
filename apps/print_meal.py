@@ -17,7 +17,7 @@ def remove_html_tags(data):
 
 @on_command(['!밥', '!학식', '!ㅎㅅ', '!gt'])
 def run(robot, channel, tokens, user):
-    '''학식 메뉴를 보여드려요!'''
+    '''학식 메뉴'''
     html = urllib.urlopen('http://dgucoop.dongguk.ac.kr/store/store.php?w=4')
     soup = BeautifulSoup(html, 'lxml')
     menus = soup.find_all('td', {'bgcolor': '#FFFFFF'})

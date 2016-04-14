@@ -10,6 +10,7 @@ from subprocess import check_output
 
 @on_command(['!기억삭제', '!ㄱㅇㅅㅈ', '!rdtw'])
 def run(robot, channel, tokens, user):
+    '''단어 더이상 기억안함'''
     if len(tokens) == 1:
         path = '/home/simneol/hongmoa/apps/name_cache/'+str(tokens[0])
         msg = ''

@@ -66,6 +66,3 @@ apps/name_cache
 
 # Backup File
 *.old
-
-# Symbolic Link
-apps/settings.py

@@ -14,7 +14,7 @@ def isNum(s):
 
 @on_command(['!메모삭제', '!ㅁㅁㅅㅈ', '!aatw'])
 def run(robot, channel, tokens, user):
-    '''메모한 내용을 지워드려요!'''
+    '''메모 지워줌'''
     token_count = len(tokens)
     msg = ''
     if token_count < 1:
@@ -37,7 +37,7 @@ def run(robot, channel, tokens, user):
     del_line.sort()
     maxnum = del_line.pop()
     if maxnum > line_num:
-        return channel, ':smile_cat: Exception : Index Out of Range'
+        return channel, '그건 안댐;'
     del_line.append(maxnum)
     f = open('/home/simneol/hongmoa/apps/memo_cache/'+str(user), 'w')
     f.write(contents)

@@ -6,7 +6,7 @@ from time import localtime, strftime
 
 @on_command(['!메모', '!ㅁㅁ', '!aa'])
 def run(robot, channel, tokens, user):
-    '''입력하신 내용을 기억해드려요!'''
+    '''메모 기억해드림'''
     token_count = len(tokens)
     msg = ''
     if token_count < 1:
@@ -18,7 +18,7 @@ def run(robot, channel, tokens, user):
                 line_num += 1
                 msg += str(line_num)+': '+line
                 line = f.readline()
-            msg = '='*14+'총 '+str(line_num)+'개의 메모가 있습니다.'+'='*14+'\n'+msg
+            msg = '='*14+'총 '+str(line_num)+'개 있음'+'='*14+'\n'+msg
         else:
             msg = '기억했던 내용이 없습니다. 사용법) !메모 <기억할 내용>'
         return channel, msg

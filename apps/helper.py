@@ -3,9 +3,9 @@ from __future__ import unicode_literals
 from decorators import on_command
 
 
-@on_command(['!생협', 'dgucoop', '!ㅅㅎ', '!tg'])
+@on_command(['!도움', '!ㄷㅇ', '!승규야','!승규'])
 def run(robot, channel, tokens, user):
-    '''도움말을 출력해드려요'''
+    '''도움말 출력 예) `!승규야 메모`'''
     if len(tokens) < 1:
         return channel, '\n'.join(robot.docs)
     if tokens[0] in ['생협', 'dgucoop', 'ㅅㅎ', 'tg']:
@@ -33,7 +33,14 @@ def run(robot, channel, tokens, user):
         예) !메모삭제 1 2 3 4 5  =>  1, 2, 3, 4, 5번째 메모가 지워져요!'''
         return channel, msg
     if tokens[0] in ['기억', 'ㄱㅇ', 'rd']:
-        msg = ''
+        msg = '''어떠한 단어에 대한 설명을 알려주시면 기억해요!
+        메모와 다른점은, 단어로 접근을 할 수 있고 모두가 다 같이 공유해요!
+        !기억 <기억할 단어> <단어 설명>
+        예) !기억 DNA Dongguk Network Association의 약자
+        기억한 것을 다시 살펴보고자 할 때는 단어만 입력해주시면 되요!
+        예) !기억 DNA
+        기억시킨 단어가 너무 많아 기억이 안날땐, 다음과 같이 해주세요!
+        예) !기억 ?'''
         return channel, msg
     if tokens[0] in ['기억삭제', 'ㄱㅇㅅㅈ', 'rdtw']:
         msg = ''
