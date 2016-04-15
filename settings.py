@@ -9,7 +9,8 @@ APPS =[
  'delete_memo',
  'name',
  'delete_memory',
- 'quiz'
+ 'quiz',
+ 'answer'
  ]
 
 BOT_NAME = '윤승규'

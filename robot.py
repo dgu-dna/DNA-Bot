@@ -100,21 +100,6 @@ class Robot(object):
                 #self.client.rtm_send_message(reboot_chn,'rebooted successfully')
 		self.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=debug_chn,text='나 왔음')
                 os.remove('booting')
-            if len(sys.argv) == 2:
-		self.client.api_call('chat.postMessage',username=BOT_NAME+'(debug)', as_user='false',icon_url=ICON_URL,channel=debug_chn,text='rebooted successfully')
-                log_file = open(sys.argv[1],'r')
-                while True:
-                    txt = line = log_file.readline()
-                    while line:
-                        line = log_file.readline()
-                        txt += line
-                    if txt:
-                        self.client.api_call('chat.postMessage',username=BOT_NAME+'(debug)', as_user='false',icon_url=ICON_URL,channel=debug_chn,text=txt)
-                    events = self.client.rtm_read()
-                    if events:
-                        messages = self.extract_messages(events)
-                        self.handle_messages(messages)
-                    gevent.sleep(0.3)
             while True:
                 events = self.client.rtm_read()
                 if events:
