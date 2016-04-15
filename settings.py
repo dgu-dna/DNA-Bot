@@ -3,13 +3,13 @@ from __future__ import unicode_literals
 
 
 APPS =[
- 'system',
  'helper',
  'print_meal',
  'memo',
  'delete_memo',
  'name',
- 'delete_memory'
+ 'delete_memory',
+ 'quiz'
  ]
 
 BOT_NAME = '윤승규'
