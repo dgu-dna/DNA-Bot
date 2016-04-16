@@ -71,7 +71,7 @@ def run(robot, channel, tokens, user):
         user_info['answer'] = answer
         with open('./apps/quiz_cache/'+str(user_data['user']['name'])+'.json','w') as fp:
             json.dump(user_info, fp, indent = 4)
-        msg = '`['+user_info['category']+']----Quiz no.'+str(rand_num+1)+'`  // 총 '+str(user_info['q_max'])+'문제 중 '+str(len(user_info['solved'])+1)+'개 째... // 답안 제출법: `!정답 <답안>`\n'+question
+        msg = '> *['+user_info['category']+']---- '+str(rand_num+1)+'번 문제  || 총 '+str(user_info['q_max'])+'문제 중 '+str(len(user_info['solved'])+1)+'개 째... || 답안 제출법:* `!정답 <답안>`\n```'+question+'```'
     else:
-        return channel, '진행중인 문제집이 없음. 자세한 사용법은...'
+        return channel, '진행중인 문제집이 없음. 자세한 사용법은...(`!도움 퀴즈`)'
     return channel, msg

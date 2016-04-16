@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from decorators import on_command
 from slackudf import send_msg, cat_token
 from time import localtime, strftime
+from subprocess import check_output
 import os
 import json
 import time
@@ -28,7 +29,7 @@ def run(robot, channel, tokens, user):
         if os.path.isfile('./apps/quiz_cache/'+str(user_data['user']['name'])+'.json'):
             udat = open('./apps/quiz_cache/'+str(user_data['user']['name'])+'.json').read()
             user_info = json.loads(udat)
-            msg = '`['+user_info['category']+']----Quiz no.'+str(user_info['q_num'])+'`  // 총 '+str(user_info['q_max'])+'문제 중 '+str(len(user_info['solved'])+1)+'개 째... // 답안 제출법: `!정답 <답안>`\n'+user_info['question']
+            msg = '> *['+user_info['category']+']---- '+str(user_info['q_num'])+'번 문제  || 총 '+str(user_info['q_max'])+'문제 중 '+str(len(user_info['solved'])+1)+'개 째... || 답안 제출법:* `!정답 <답안>`\n```'+user_info['question']+'```'
             return channel, msg
         else:
             return channel, '진행중인 문제집이 없음. 자세한 사용법은...(`!도움 퀴즈`)'
@@ -64,8 +65,8 @@ def run(robot, channel, tokens, user):
             return channel, '자세한 사용법은...(`!도움 퀴즈`)'
         quiz['question'][int(tokens[2])-1] = tokens[3]
         quiz['answer'][int(tokens[2])-1] = tokens[4]
-        quiz['user'][int(tokens[2])-1] = [str(user_data['user']['name'])]
-        quiz['time'][int(tokens[2])-1] = [strftime('%Y-%m-%d %H:%M:%S', localtime())]
+        quiz['user'][int(tokens[2])-1] = str(user_data['user']['name'])
+        quiz['time'][int(tokens[2])-1] = strftime('%Y-%m-%d %H:%M:%S', localtime())
         with open('./apps/quiz_cache/category/'+str(tokens[1])+'.json','w') as fp:
             json.dump(quiz, fp, indent = 4)
         return channel, str(tokens[1])+'에 관한 '+str(tokens[2])+'번 문제가 수정됨'
@@ -76,6 +77,13 @@ def run(robot, channel, tokens, user):
         qdat = open('./apps/quiz_cache/category/'+str(tokens[1])+'.json').read()
         quiz = json.loads(qdat)
         msg = str(tokens[1])+'에는 총 '+str(quiz['q_num'])+'개의 문제가 있음'
+        return channel, msg
+    elif str(tokens[0]) == '문제집':
+        all_file = check_output(['ls', './apps/quiz_cache/category'])
+        msg = '>*여태 등록된 문제집들*\n'
+        for s in all_file.split('\n'):
+            msg += s[:-5]+' || '
+        msg = msg[:-8]
         return channel, msg
     elif str(tokens[0]) == '시작':
         if len(tokens) < 2 :
@@ -101,5 +109,5 @@ def run(robot, channel, tokens, user):
         user_info['category'] = str(tokens[1])
         with open('./apps/quiz_cache/'+str(user_data['user']['name'])+'.json','w') as fp:
             json.dump(user_info, fp, indent = 4)
-        msg = '`['+str(tokens[1])+']----Quiz no.'+str(rand_num+1)+'`  // 총 '+str(user_info['q_max'])+'문제 중 '+str(len(user_info['solved'])+1)+'개 째... // 답안 제출법: `!정답 <답안>`\n'+question
+        msg = '> *['+str(tokens[1])+']---- '+str(rand_num+1)+'번 문제  || 총 '+str(user_info['q_max'])+'문제 중 '+str(len(user_info['solved'])+1)+'개 째... || 답안 제출법:* `!정답 <답안>`\n```'+question+'```'
     return channel, msg
