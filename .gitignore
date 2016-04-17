@@ -65,3 +65,9 @@ apps/*_cache
 
 # Backup File
 *.old
+
+# Private Infomation
+settings.py
+
+# Temporary
+jansori*

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from decorators import on_command
-from slackudf import send_msg, cat_token
+from slackudf import cat_token
 from time import localtime, strftime
 from datetime import datetime
 import os
@@ -9,12 +9,16 @@ import json
 import time
 import urllib
 import random
+import imp
+settings = imp.load_source('settings','./settings.py')
+WEP_API_TOKEN = settings.WEP_API_TOKEN
+#from settings import WEP_API_TOKEN
 
 @on_command(['!정답','!ㅈㄷ','!we'])
 def run(robot, channel, tokens, user):
     ''''''
     # channel 'C', DM 'D'
-    url = 'https://slack.com/api/users.info?token=xoxp-26726533763-26813510823-33040779782-4d90d5301c&user='+str(user)+'&pretty=1'
+    url = 'https://slack.com/api/users.info?token='+WEP_API_TOKEN+'&user='+str(user)+'&pretty=1'
     response = urllib.urlopen(url)
     user_data = json.loads(response.read())
     quiz = {}
@@ -39,7 +43,6 @@ def run(robot, channel, tokens, user):
             user_info['correct'] += 1
         else:
             msg = 'ㄴ '+msg
-        send_msg(robot, channel, msg)
         if len(user_info['solved']) >= user_info['q_max']:
             tim = user_info['start_time'].split(' ')
             dt_i = datetime(int(tim[0]), int(tim[1]), int(tim[2]), int(tim[3]), int(tim[4]), int(tim[5]), 0)
@@ -55,7 +58,7 @@ def run(robot, channel, tokens, user):
                 elap += str(int((sec % 3600) // 60))+'분 '+str(int(sec % 60))+'초'
             else:
                 elap += str(int(sec % 60))+'초'
-            msg = '문제집 내의 모든 문제를 품. '+str(user_info['correct'])+'/'+str(user_info['q_max'])+'문제 정답. (소요시간 : '+elap+')'
+            msg += '\n문제집 내의 모든 문제를 품. '+str(user_info['correct'])+'/'+str(user_info['q_max'])+'문제 정답. (소요시간 : '+elap+')'
             os.remove('./apps/quiz_cache/'+str(user_data['user']['name'])+'.json')
             return channel, msg
         rand_num = random.randrange(0, quiz['q_num'])
@@ -71,7 +74,7 @@ def run(robot, channel, tokens, user):
         user_info['answer'] = answer
         with open('./apps/quiz_cache/'+str(user_data['user']['name'])+'.json','w') as fp:
             json.dump(user_info, fp, indent = 4)
-        msg = '> *['+user_info['category']+']---- '+str(rand_num+1)+'번 문제  || 총 '+str(user_info['q_max'])+'문제 중 '+str(len(user_info['solved'])+1)+'개 째... || 답안 제출법:* `!정답 <답안>`\n```'+question+'```'
+        msg += '\n> *['+user_info['category']+']---- '+str(rand_num+1)+'번 문제  || 총 '+str(user_info['q_max'])+'문제 중 '+str(len(user_info['solved'])+1)+'개 째... || 답안 제출법:* `!정답 <답안>`\n```'+question+'```'
     else:
         return channel, '진행중인 문제집이 없음. 자세한 사용법은...(`!도움 퀴즈`)'
     return channel, msg

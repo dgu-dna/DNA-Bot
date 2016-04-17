@@ -6,15 +6,19 @@ import json
 import urllib
 import os
 from subprocess import check_output
-
+import imp
+settings = imp.load_source('settings','./settings.py')
+WEP_API_TOKEN = settings.WEP_API_TOKEN
+#from settings import WEP_API_TOKEN
 
 @on_command(['!기억', '!ㄱㅇ', '!rd'])
 def run(robot, channel, tokens, user):
     '''단어 기억해드림'''
+    msg = ''
     if len(tokens) == 0:
         msg = '`!기억` 에 대한 사용법은 `!도움 기억`을 통해 볼 수 있음'
         return channel, msg
-    url = 'https://slack.com/api/users.info?token=xoxp-26726533763-26813510823-33040779782-4d90d5301c&user='+str(user)+'&pretty=1'
+    url = 'https://slack.com/api/users.info?token='+WEP_API_TOKEN+'&user='+str(user)+'&pretty=1'
     response = urllib.urlopen(url)
     data = json.loads(response.read())
     if os.path.exists('./apps/name_cache/'+str(tokens[0])):
@@ -38,7 +42,7 @@ def run(robot, channel, tokens, user):
             line = f.readline()
             full_line += line
         msg = full_line+'\n'+time
-    elif len(tokens)>2:
+    elif len(tokens)>1:
         if f:
             line = f.readline()
             while line:
@@ -51,8 +55,9 @@ def run(robot, channel, tokens, user):
         full_line = full_line+desc[:-1]+'\n'
         if f:
             f.close()
-        f = open('/home/simneol/hongmoa/apps/name_cache/'+str(tokens[0]), 'w')
+        f = open('./apps/name_cache/'+str(tokens[0]), 'w')
         f.write(full_line)
+        f.close()
         msg = str(tokens[0])+'에 대해 '+desc[:-1]+'(이)라고 기억했어요!'
 #    msg = str(data['user']['name'])+'이(가) '+strftime('%Y-%m-%d %H:%M:%S',localtime())+'에 불러주었어요!'
     return channel, msg

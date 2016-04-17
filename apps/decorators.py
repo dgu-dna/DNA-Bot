@@ -4,7 +4,12 @@ from __future__ import unicode_literals
 import re
 import traceback
 from functools import wraps
-from settings import BOT_NAME, ICON_URL
+import imp
+
+settings = imp.load_source('settings', './settings.py')
+BOT_NAME = settings.BOT_NAME
+ICON_URL = settings.ICON_URL
+#from settings import BOT_NAME, ICON_URL
 
 TOKENIZE_PATTERN = re.compile(r'["“](.+?)["”]|(\S+)', re.U | re.S)
 

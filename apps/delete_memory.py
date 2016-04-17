@@ -2,10 +2,7 @@
 from __future__ import unicode_literals
 from decorators import on_command
 from time import localtime, strftime
-import json
-import urllib
 import os
-from subprocess import check_output
 
 
 @on_command(['!기억삭제', '!ㄱㅇㅅㅈ', '!rdtw'])

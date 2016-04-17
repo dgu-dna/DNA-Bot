@@ -8,11 +8,9 @@ from gevent.pool import Pool
 from gevent.monkey import patch_all
 from importlib import import_module
 from slackclient import SlackClient
-from settings import BOT_NAME, ICON_URL
+from settings import BOT_NAME, ICON_URL, SLACK_TOKEN_MGR
 patch_all()
 from subprocess import check_output
-
-SLACK_TOKEN = 'xoxb-35078944436-bYNtNlEYxZMlHJI8NqmyQl7b'
 
 pool = Pool(20)
 
@@ -21,7 +19,7 @@ logger = logging.getLogger()
 
 class Robot(object):
     def __init__(self):
-        self.client = SlackClient('xoxb-35078944436-bYNtNlEYxZMlHJI8NqmyQl7b')
+        self.client = SlackClient(SLACK_TOKEN_MGR)
         self.apps, self.docs = self.load_apps()
 
     def load_apps(self):
@@ -99,7 +97,7 @@ class Robot(object):
                 if events:
                     messages = self.extract_messages(events)
                     self.handle_messages(messages)
-                gevent.sleep(0.3)
+                gevent.sleep(1.5)
 
 
 if '__main__' == __name__:

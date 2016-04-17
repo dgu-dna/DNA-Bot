@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from decorators import on_command
-from slackudf import send_msg, cat_token
+from slackudf import cat_token
 from time import localtime, strftime
 from subprocess import check_output
 import os
@@ -9,6 +9,10 @@ import json
 import time
 import urllib
 import random
+import imp
+settings = imp.load_source('settings','./settings.py')
+WEP_API_TOKEN = settings.WEP_API_TOKEN
+#from settings import WEP_API_TOKEN
 
 def isNum(s):
     try:
@@ -21,7 +25,7 @@ def isNum(s):
 def run(robot, channel, tokens, user):
     '''문제 내드림'''
     # channel 'C', DM 'D'
-    url = 'https://slack.com/api/users.info?token=xoxp-26726533763-26813510823-33040779782-4d90d5301c&user='+str(user)+'&pretty=1'
+    url = 'https://slack.com/api/users.info?token='+WEP_API_TOKEN+'&user='+str(user)+'&pretty=1'
     response = urllib.urlopen(url)
     user_data = json.loads(response.read())
     quiz = {}
@@ -70,7 +74,10 @@ def run(robot, channel, tokens, user):
         with open('./apps/quiz_cache/category/'+str(tokens[1])+'.json','w') as fp:
             json.dump(quiz, fp, indent = 4)
         return channel, str(tokens[1])+'에 관한 '+str(tokens[2])+'번 문제가 수정됨'
-
+    elif str(tokens[0]) == '포기':
+        os.remove('./apps/quiz_cache/'+str(user_data['user']['name'])+'.json')
+        msg = '진행중인 퀴즈를 포기함'
+        return channel, msg
     elif str(tokens[0]) == '조회':
         if len(tokens) < 2 :
             return channel, '자세한 사용법은...(`!도움 퀴즈`)'
