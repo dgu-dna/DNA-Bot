@@ -46,7 +46,7 @@ def insertLine(file, data, idx):
         for line in buf:
             i += 1
             if i == idx:
-                line = data + '\n' + line
+                line = data + line
             out_file.write(line)
         if idx == -1:
             out_file.write(data)
