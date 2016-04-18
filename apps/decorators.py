@@ -38,8 +38,8 @@ def on_command(commands):
                 try:
                     channel, message = func(robot, channel, tokens, user)
                     if channel:
-#                        robot.client.rtm_send_message(channel, message)
-			robot.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=channel,text=message)
+                        robot.client.rtm_send_message(channel, message)
+#			robot.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=channel,text=message)
                         return message
                     else:
                         print "[Warn] Couldn't delivered a message"
