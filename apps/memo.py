@@ -26,7 +26,7 @@ def run(robot, channel, tokens, user):
             if line:
                 while line:
                     line_num += 1
-                    if start_num == -1 or end_num == -1 and line_num >= start_num and line_num <= end_num:
+                    if start_num == -1 or end_num == -1 or line_num >= start_num and line_num <= end_num:
                         msg += '>*'+('%3s'%(str(line_num)+':'))+'* '+line
                     line = f.readline()
         return channel, msg
