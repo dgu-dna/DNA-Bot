@@ -29,6 +29,7 @@ def run(robot, channel, tokens, user):
     response = urllib.urlopen(url)
     user_data = json.loads(response.read())
     quiz = {}
+    msg = ''
     if len(tokens) < 1:
         if os.path.isfile('./apps/quiz_cache/'+str(user_data['user']['name'])+'.json'):
             udat = open('./apps/quiz_cache/'+str(user_data['user']['name'])+'.json').read()
@@ -38,7 +39,7 @@ def run(robot, channel, tokens, user):
         else:
             return channel, '진행중인 문제집이 없음. 자세한 사용법은...(`!도움 퀴즈`)'
 
-    if str(tokens[0]) == '등록':
+    if str(tokens[0]) in ['등록', '추가']:
         if len(tokens) != 4:
             return channel, '자세한 사용법은...(`!도움 퀴즈`)'
         if not os.path.isfile('./apps/quiz_cache/category/'+str(tokens[1])+'.json'):
@@ -117,4 +118,6 @@ def run(robot, channel, tokens, user):
         with open('./apps/quiz_cache/'+str(user_data['user']['name'])+'.json','w') as fp:
             json.dump(user_info, fp, indent = 4)
         msg = '> *['+str(tokens[1])+']---- '+str(rand_num+1)+'번 문제  || 총 '+str(user_info['q_max'])+'문제 중 '+str(len(user_info['solved'])+1)+'개 째... || 답안 제출법:* `!정답 <답안>`\n```'+question+'```'
+    else:
+        msg = '자세한 사용법은...(`!도움 퀴즈`)'
     return channel, msg

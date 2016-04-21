@@ -38,11 +38,11 @@ def run(robot, channel, tokens, user):
             answer += word
         msg = '정답은 `'+user_info['answer']+'` (출제:'+quiz['user'][user_info['q_num']-1][:1]+'·'+quiz['user'][user_info['q_num']-1][1:]+')'
         user_info['solved'].append(user_info['q_num'])
-        if answer == try_answer:
-            msg = 'ㅇ '+msg
+        if answer.lower() == try_answer.lower():
+            msg = ':o: '+msg
             user_info['correct'] += 1
         else:
-            msg = 'ㄴ '+msg
+            msg = ':x: '+msg
         if len(user_info['solved']) >= user_info['q_max']:
             tim = user_info['start_time'].split(' ')
             dt_i = datetime(int(tim[0]), int(tim[1]), int(tim[2]), int(tim[3]), int(tim[4]), int(tim[5]), 0)

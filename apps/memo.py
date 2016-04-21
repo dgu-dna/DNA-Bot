@@ -19,9 +19,8 @@ def run(robot, channel, tokens, user):
             if line:
                 while line:
                     line_num += 1
-                    msg += str(line_num)+': '+line
+                    msg += '>*'+('%3s'%(str(line_num)+':'))+'* '+line
                     line = f.readline()
-                msg = '='*14+'총 '+str(line_num)+'개 있음'+'='*14+'\n'+msg
         return channel, msg
     contents = ''
     line = -1
@@ -30,8 +29,8 @@ def run(robot, channel, tokens, user):
         tokens = tokens[:-1]
     for s in tokens:
         contents += str(s)+' '
-    timestamp = strftime('%Y-%m-%d %H:%M:%S', localtime())
-    data = contents[:-1]+' (Added at '+timestamp+')\n'
+    #timestamp = strftime('%Y-%m-%d %H:%M:%S', localtime())
+    data = contents[:-1]+'\n'#+' (Added at '+timestamp+')\n'
     insertLine('/home/simneol/hongmoa/apps/memo_cache/'+str(user), data, line)
 
     msg = '< '+contents[:-1]+' > 을(를) 기억했습니다.'

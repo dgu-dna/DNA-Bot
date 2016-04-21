@@ -12,7 +12,10 @@ ICON_URL = settings.ICON_URL
 #from settings import BOT_NAME, ICON_URL
 
 def send_msg(robot, channel, txt):
-    robot.client.api_call('chat.postMessage',username=BOT_NAME+' 매니저', as_user='false',icon_url=ICON_URL,channel=channel,text=txt)
+    try:
+        robot.client.api_call('chat.postMessage',username=BOT_NAME+' 매니저', as_user='false',icon_url=ICON_URL,channel=channel,text=txt)
+    except:
+        robot.client.rtm_send_message(channel, message)
 
 @on_command(['$'])
 def run(robot, channel, tokens, user):
