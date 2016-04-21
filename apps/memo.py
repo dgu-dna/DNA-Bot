@@ -9,7 +9,7 @@ def run(robot, channel, tokens, user):
     '''메모 기억해드림'''
     token_count = len(tokens)
     msg = ''
-    if token_count < 1 or tokens[0] == '부분':
+    if token_count < 1 or tokens[0] == '부분' or tokens[0] == 'ㅂㅂ' or tokens[0] == 'qq':
         if not os.path.isfile('/home/simneol/hongmoa/apps/memo_cache/'+str(user)):
             msg = '기억했던 내용이 없습니다. 사용법) !메모 <기억할 내용> [<메모가 들어갈 번호>]'
         else:
