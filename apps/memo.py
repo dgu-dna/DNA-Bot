@@ -22,6 +22,7 @@ def run(robot, channel, tokens, user):
                 end_num = int(tokens[2])
             line = f.readline()
             line_num = 0
+            msg = ''
             if line:
                 while line:
                     line_num += 1
