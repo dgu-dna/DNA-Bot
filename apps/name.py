@@ -6,9 +6,10 @@ import json
 import urllib
 import os
 from subprocess import check_output
-import imp
-settings = imp.load_source('settings','./settings.py')
-WEP_API_TOKEN = settings.WEP_API_TOKEN
+from slackutils import insert_dot, get_nickname
+#import imp
+#settings = imp.load_source('settings','./settings.py')
+#WEP_API_TOKEN = settings.WEP_API_TOKEN
 #from settings import WEP_API_TOKEN
 
 @on_command(['!기억', '!ㄱㅇ', '!rd'])
@@ -18,9 +19,10 @@ def run(robot, channel, tokens, user):
     if len(tokens) == 0:
         msg = '`!기억` 에 대한 사용법은 `!도움 기억`을 통해 볼 수 있음'
         return channel, msg
-    url = 'https://slack.com/api/users.info?token='+WEP_API_TOKEN+'&user='+str(user)+'&pretty=1'
-    response = urllib.urlopen(url)
-    data = json.loads(response.read())
+    #url = 'https://slack.com/api/users.info?token='+WEP_API_TOKEN+'&user='+str(user)+'&pretty=1'
+    #response = urllib.urlopen(url)
+    #data = json.loads(response.read())
+    nickname = get_nickname(user)
     if os.path.exists('./apps/name_cache/'+str(tokens[0])):
         f = open('./apps/name_cache/'+str(tokens[0]), 'r')
     else:
@@ -48,7 +50,7 @@ def run(robot, channel, tokens, user):
             while line:
                 line = f.readline()
                 full_line += line
-        full_line = '가장 최근에 '+str(data['user']['name'])[:1]+'·'+str(data['user']['name'])[1:]+'이(가) '+strftime('%Y-%m-%d %H:%M:%S', localtime())+'에 알려줬어요!\n'+full_line
+        full_line = '가장 최근에 '+insert_dot(nickname)+'이(가) '+strftime('%Y-%m-%d %H:%M:%S', localtime())+'에 알려줬어요!\n'+full_line
         desc = ''
         for i in range(1, len(tokens)):
             desc += tokens[i]+' '
