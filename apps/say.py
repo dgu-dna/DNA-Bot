@@ -8,7 +8,9 @@ def run(robot, channel, tokens, user):
     '''시킨대로 말함'''
     if len(tokens) > 1:
         if tokens[0][1] == '#':
-            msg = cat_token(tokens,1)
+            msg = ' '.join(tokens).split(' ', 1)[1]
+            #msg = cat_token(tokens,1)
             return tokens[0][2:-1], msg
-    msg = cat_token(tokens,0)
+    msg = ' '.join(tokens)
+    #msg = cat_token(tokens,0)
     return channel, msg

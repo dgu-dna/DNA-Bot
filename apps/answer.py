@@ -124,7 +124,7 @@ def run(robot, channel, tokens, user):
             msg += '\n문제집 내의 모든 문제를 품. '+str(chan_info['correct'])+'/'+str(chan_info['q_max'])+'문제 정답. (소요시간 : '+elap+')\n'
             userlist = chan_info['correct_user']
             countlist = chan_info['correct_cnt']
-            countlist, userlist = zip(*reversed(sorted(zip(countlist, userlist))))
+            countlist, userlist = zip(*sorted(zip(countlist, userlist), reverse=True))
             for user in userlist:
                 if userlist.index(user) == 0:
                     msg += ':trophy:  '+insert_dot(user) +': '+str(countlist[userlist.index(user)])+'문제\n'

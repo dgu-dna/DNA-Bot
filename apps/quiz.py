@@ -101,9 +101,13 @@ def run(robot, channel, tokens, user):
     elif str(tokens[0]) == '조회':
         if len(tokens) < 2 :
             return channel, '자세한 사용법은...(`!도움 퀴즈`)'
+        if str(channel)[0] == 'C':
+            return channel, '채널에선 사용할 수 없음'
         qdat = open('./apps/quiz_cache/category/'+str(tokens[1])+'.json').read()
         quiz = json.loads(qdat)
         msg = str(tokens[1])+'에는 총 '+str(quiz['q_num'])+'개의 문제가 있음'
+        for question, i in zip(quiz['question'], range(quiz['q_num'])):
+            msg += '\n*' + str(i+1) + '.* ' + question
         return channel, msg
     elif str(tokens[0]) == '문제집':
         all_file = check_output(['ls', './apps/quiz_cache/category'])
