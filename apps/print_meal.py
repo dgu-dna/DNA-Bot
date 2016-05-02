@@ -8,139 +8,144 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from time import localtime, strftime
 
+DGUCOOP_URL = 'http://dgucoop.dongguk.ac.kr/store/store.php?w=4'
+# 교직원, 상록원, 솥앤누들, 그루터기, 팬앤누들, 아리수
+COURSE_INFO = {
+                0:
+                {
+                    'name': '교직원',
+                    'cnt': 4,
+                    'details': ['집밥', '한그릇', '채식당'],
+                    'dinner_cnt': [3, 3, 0]
+                },
+                5:
+                {
+                    'name': '상록원',
+                    'cnt': 7,
+                    'details': ['백반', '일품', '양식', '뚝배기'],
+                    'dinner_cnt': [4, 4, 4, 4]
+                },
+                15:
+                {
+                    'name': '그루터기',
+                    'cnt': 3,
+                    'details': ['A코너', 'B코너'],
+                    'dinner_cnt': [2, 2]
+                },
+                19:
+                {
+                    'name': '팬앤누들',
+                    'cnt': 1,
+                    'details': ['Pan', 'Noodle'],
+                    'dinner_cnt': [0, 0]
+                },
+                21:
+                {
+                    'name': '아리수',
+                    'cnt': 2,
+                    'details': ['메뉴', '분식'],
+                    'dinner_cnt': [2, 0]
+                },
+                25:
+                {
+                    'name': '남산학사',
+                    'cnt': 5,
+                    'details': ['A코너', 'B코너', '푸드코트'],
+                    'dinner_cnt': [3, 3, 0]
+                }
+            }
 
-def remove_html_tags(data):
-    p = re.compile(r'<.*?>', re.M)
-    # return p.findall(data)
-    return p.sub('\n', data)
+
+def remove_noise(data):
+    # Delete HTML tag
+    a = re.sub(r'<.*?>', '', data)
+    # Delete Blank line
+    b = re.sub(r'(^|\n)\s*\n', r'\1', a)
+    # Delete Price tag
+    c = re.sub(r'\s*:?￦?[0-9],?[0-9]{3}원?.*$', '', b, flags=re.M)
+    # Delete source tag (min)
+    d = re.sub(r'\(.*(국내|스페인|독일|호주|베트남|러시아)산.*\)', '', c, flags=re.M)
+    # Delete source tag (all)
+    e = re.sub(r'^.*(국내|스페인|독일|호주|베트남|러시아)산.*$', '', d, flags=re.M)
+    # Delete Blank line
+    f = re.sub(r'\n\s*$', '', e)
+    return f
 
 
 @on_command(['!밥', '!학식', '!ㅎㅅ', '!gt'])
 def run(robot, channel, tokens, user):
-    '''학식 메뉴'''
-    html = urllib.urlopen('http://dgucoop.dongguk.ac.kr/store/store.php?w=4')
-    soup = BeautifulSoup(html, 'lxml')
-    menus = soup.find_all(True, {'bgcolor': '#FFFFFF'})
-    present_time = datetime.today()
-    dinner_time = present_time.replace(hour=17, minute=0, second=0, microsecond=0)
-    is_lunch = present_time < dinner_time
-    if len(tokens) == 1:
-        if tokens[0] in set(['중식', 'ㅈㅅ', '점심', 'wt']):
-            is_lunch = True
-        elif tokens[0] in set(['석식', 'ㅅㅅ', '저녁', 'tt', 'ws']):
-            is_lunch = False
+    '''학식 메뉴보여줌'''
+    now_t = datetime.today().time()
+    course = {}
+    print_course = ['상록원', '아리수', '남산학사']   # default
+    is_lunch = now_t < now_t.replace(17, 0, 0, 0)   # dinner
+    full_print = False
+    if len(tokens) > 0:
+        for token in tokens:
+            if token in ['중식', 'ㅈㅅ', '점심', 'wt']:
+                is_lunch = True
+            elif token in ['석식', 'ㅅㅅ', '저녁', 'tt', 'ws']:
+                is_lunch = False
+            else:
+                print_course = []
+        for token in tokens:
+            if token in ['교직원식당', '교', 'ㄱ', 'r']:
+                if '교직원' not in print_course:
+                    print_course.append('교직원')
+            elif token in ['팬앤누들', '팬', 'ㅍ', 'v']:
+                if '팬앤누들' not in print_course:
+                    print_course.append('팬앤누들')
+            elif token in ['상록원', '상', 'ㅅ', 't']:
+                if '상록원' not in print_course:
+                    print_course.append('상록원')
+            elif token in ['아리수', '아', 'ㅇ', 'd']:
+                if '아리수' not in print_course:
+                    print_course.append('아리수')
+            elif token in ['남산학사', '긱식', '남', '긱', '기', 's']:
+                if '남산학사' not in print_course:
+                    print_course.append('남산학사')
+            elif token in ['그루터기', '그', 'ㄱ', 'r']:
+                if '그루터기' not in print_course:
+                    print_course.append('그루터기')
+            elif token in ['전부출력', '모두출력', '전부', '모두']:
+                full_print = True
+
+    time_message = strftime('%m월 %d일(%a)', localtime())
     if is_lunch:
-        message = ':sunny:'+strftime('%m월 %d일(%a)', localtime())+'중식입니다 :sunny:\n'
-        course = list([list([6, 7, 8, 9]), list([22]), list([26])])
+        message = ':sunny: ' + time_message + '중식 :sunny:\n'
     else:
-        message = ':star2:'+strftime('%m월 %d일(%a)', localtime())+'석식입니다:star2:\n'
-        course = list([list([10, 11, 12, 13]), list([24]), list([29, 30])])
-    menu_num = 0
-    pannoodle_num = 20
-    for menu in menus:
-        menu_num += 1
-        if menu_num == course[0][0]:
-            message += '='*5+' 상록원 '+'='*5+'\n'
-        if menu_num == course[1][0]:
-            message = message[:-4] + '\n' + '='*5+' 아리수 '+'='*5+'\n'
-        if menu_num == course[2][0]:
-            message += '='*5+' 남산학사 '+'='*5+'\n'
-        for c in course:
-            if menu_num == 16:
-                m=''
-                for line in remove_html_tags(str(menu)).split('\n'):
-                    m += line
-                if m == '휴무':
-                    pannoodle_num -= 1
-                    for idx, val in enumerate(c):
-                        if c[idx] > 16:
-                            c[idx] -= 3
-                    continue
-            if menu_num == pannoodle_num:
-                m=''
-                for line in remove_html_tags(str(menu)).split('\n'):
-                    m += line
-                if m == '휴무':
-                    for idx, val in enumerate(c):
-                        if c[idx] > pannoodle_num:
-                            c[idx] -= 1
-                    continue
-            if menu_num in c:
-                course_num = course.index(c)+1
-                printed_num = 0
-                for line in remove_html_tags(str(menu)).split('\n'):
-                    if line.rstrip() and printed_num < course_num:
-                        printed_num += 1
-                        message += line
-                        s_course=['양', '뚝', '백', '일']
-                        if menu_num < 20 :
-                            message += '('+s_course[menu_num%4]+')'
-                            message += ' || '
-                        else:
-                            message += '\n'
-    return channel, message
+        message = ':star2: ' + time_message + '석식 :star2:\n'
 
-if "__main__" == __name__:
-    html = urllib.urlopen('http://dgucoop.dongguk.ac.kr/store/store.php?w=4')
+    html = urllib.urlopen(DGUCOOP_URL)
     soup = BeautifulSoup(html, 'lxml')
-    all_ = soup.find_all('div', {'id': 'sdetail'})
-    stores = soup.find_all('td', {'class': 'menu_st'})
-    menus = soup.find_all(True, {'bgcolor': '#FFFFFF'})
-    menu_num = 0
-    present_time = datetime.today()
-    dinner_time = present_time.replace(hour=17, minute=0, second=0, microsecond=0)
-    print present_time
-    print dinner_time
-    print present_time < dinner_time
+    courses = soup.find_all(True, {'bgcolor': '#FFFFFF'})
 
-    course = list([set([6, 7, 8, 9]), set([20]), set([24, 25])])
-    message = ''
-    mymessage=''
-    menu_num = 0
-    for menu in menus:
-        menu_num += 1
-        if menu_num == 6:
-            message += '='*5+' 상록원(백반,일품,양식,뚝배기 순) '+'='*5+'\n'
-        if menu_num == 20:
-            message += '='*5+' 아리수 '+'='*5+'\n'
-        if menu_num == 24:
-            message += '='*5+' 남산학사 '+'='*5+'\n'
-        for c in course:
-            if menu_num < 27:
-                mymessage +=  '\n :: ' + str(menu_num) + ' :: \n '
-                for line in remove_html_tags(str(menu)).split('\n'):
-                    mymessage += line
-                break
-            if menu_num == 27:
-                print mymessage
-                menu_num = 50
-                break
-            if menu_num in c:
-                course_num = course.index(c)+1
-                printed_num = 0
-                for line in remove_html_tags(str(menu)).split('\n'):
-                    if line.rstrip() and printed_num < course_num:
-                        printed_num += 1
-                        message += line+'\n'
-    print message
-
-#    mm=''
-#    for menu in menus:
-#        menu_num+=1
-#        if menu_num==6:
-#            course=0
-#            for al in remove_html_tags(str(menu)).split('\n'):
-#                if al.rstrip() and course < 2:
-#                    print al
-#                    break
-
-#    for menu in menus:
-#        menu_num+=1
-#        for line in remove_html_tags(str(menu)).split('\n'):
-#            if line.rstrip() and menu_num == 20:
-#                print line
-# meals = tables[0]
-# for meal in tables:
-#     print meal
-# for table in tables:
-#    meals = table[0]
+    for course_idx, course_val in enumerate(courses):
+        if course_idx not in COURSE_INFO:
+            continue
+        courseInfo = COURSE_INFO[course_idx]
+        course[courseInfo['name']] = []     # course['상록원']
+        for idx, val in enumerate(courseInfo['details']):
+            menu = []
+            prefix = courseInfo['dinner_cnt'][idx]
+            str_lunch = str(courses[course_idx + idx])
+            str_dinner = str(courses[course_idx + idx + prefix])
+            lunch = remove_noise(str_lunch)
+            dinner = remove_noise(str_dinner)
+            menu.append(val)        # 일품
+            menu.append(lunch)      # 점심
+            menu.append(dinner)     # 저녁
+            course[courseInfo['name']].append(menu)
+    for pc in print_course:
+        message += '>*' + pc + '*\n'
+        for p in course[pc]:
+            if p[1 if is_lunch else 2]:
+                food = re.sub('\r\n', '\n', p[1 if is_lunch else 2])
+                food = ' || '.join(food.split('\n')) + '\n'
+                if p[1] == p[2]:
+                    if full_print:
+                        message += p[0] + ': ' + food
+                else:
+                    print p[1 if is_lunch else 2].split('\n')
+                    message += p[0] + ': ' + food
+    return channel, message
