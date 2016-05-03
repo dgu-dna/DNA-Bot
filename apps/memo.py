@@ -5,7 +5,7 @@ from time import localtime, strftime
 from slackutils import cat_token
 import os
 import json
-CACHE_DEFAULT_URL = './memo_cache/memo_cache.json'
+CACHE_DEFAULT_URL = './apps/memo_cache/memo_cache.json'
 
 
 @on_command(['!메모', '!ㅁㅁ', '!aa'])
@@ -13,7 +13,7 @@ def run(robot, channel, tokens, user):
     '''메모 기억해드림'''
     print type(user)
     user = str(user)        # user default type check
-    jdat = json.loads(open(CACHE_DEFAULT_PATH).read())
+    jdat = json.loads(open(CACHE_DEFAULT_URL).read())
     token_count = len(tokens)
     msg = ''
     if token_count < 1 or tokens[0] in ['부분', 'ㅂㅂ', 'qq', 'ㅃ']:
@@ -31,12 +31,12 @@ def run(robot, channel, tokens, user):
             msg = '\n'.join(joined_memo)
         return channel, msg
     line = len(jdat[user]) + 1
-    if tokens[-1].isdigit():
+    if tokens[-1].isdigit() and token_count > 1:
         line = int(tokens[-1])
         tokens = tokens[:-1]
     contents = cat_token(tokens, 0)
     jdat[user].insert(line - 1, contents)
-    with open(DEFAULT_PATH, 'w') as fp:
+    with open(CACHE_DEFAULT_URL, 'w') as fp:
         json.dump(jdat, fp, indent=4)
     msg = '< '+contents+' > 을(를) 기억함.'
     return channel, msg

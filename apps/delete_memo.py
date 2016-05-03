@@ -2,8 +2,9 @@
 from __future__ import unicode_literals
 from decorators import on_command
 from time import localtime, strftime
-from slackutils import isNumberber
-CACHE_DEFAULT_URL = './memo_cache/memo_cache.json'
+from slackutils import isNumber
+import json
+CACHE_DEFAULT_URL = './apps/memo_cache/memo_cache.json'
 
 
 @on_command(['!메모삭제', '!ㅁㅁㅅㅈ', '!aatw'])
@@ -25,5 +26,6 @@ def run(robot, channel, tokens, user):
         del jdat[user][line - 1]
     with open(CACHE_DEFAULT_URL, 'w') as fp:
         json.dump(jdat, fp, indent=4)
+    del_line = map(lambda s: str(s), del_line)
     msg = '<' + ', '.join(sorted(del_line)) + '> 메모를 삭제 했음.'
     return channel, msg
