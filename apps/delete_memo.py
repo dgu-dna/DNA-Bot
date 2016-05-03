@@ -2,52 +2,28 @@
 from __future__ import unicode_literals
 from decorators import on_command
 from time import localtime, strftime
-
-
-def isNum(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
+from slackutils import isNumberber
+CACHE_DEFAULT_URL = './memo_cache/memo_cache.json'
 
 
 @on_command(['!메모삭제', '!ㅁㅁㅅㅈ', '!aatw'])
 def run(robot, channel, tokens, user):
     '''메모 지워줌'''
     token_count = len(tokens)
-    msg = ''
+    user = str(user)
     if token_count < 1:
         return channel, '사용법) !메모삭제 <메모 번호>'
-    del_line = list()
+    del_line = []
     for num in tokens:
-        if(isNum(num)):
+        if(isNumber(num)):
             del_line.append(int(num))
-    f = open('/home/simneol/hongmoa/apps/memo_cache/'+str(user), 'r')
-    line_num = 0
-    contents = ''
-    line = f.readline()
-    if line:
-        while line:
-            line_num += 1
-            if line_num not in del_line:
-                contents += line
-            line = f.readline()
-    f.close()
-    del_line.sort()
-    maxnum = del_line.pop()
-    if maxnum > line_num:
+    del_line.sort(reverse=True)
+    jdat = json.loads(open(CACHE_DEFAULT_URL).read())
+    if del_line[0] > len(jdat[user]):
         return channel, '그건 안댐;'
-    del_line.append(maxnum)
-    f = open('/home/simneol/hongmoa/apps/memo_cache/'+str(user), 'w')
-    f.write(contents)
-    msg = '<'
-    for num in del_line:
-        msg += str(num)+','
-    msg = msg[:-1]+'> 메모를 삭제 했습니다.'
+    for line in del_line:
+        del jdat[user][line - 1]
+    with open(CACHE_DEFAULT_URL, 'w') as fp:
+        json.dump(jdat, fp, indent=4)
+    msg = '<' + ', '.join(sorted(del_line)) + '> 메모를 삭제 했음.'
     return channel, msg
-
-if "__main__" == __name__:
-    msg = ''
-    msg += strftime('%Y-%m-%d %H:%M:%S', localtime())
-    print msg
