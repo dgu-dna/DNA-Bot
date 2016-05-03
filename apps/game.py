@@ -107,7 +107,7 @@ def getMessage(type, channel=None, gameName=None):
         return '게임이 종료되었습니다'
 
 
-@on_command(['!게임', '!ㄱㅇ'])
+@on_command(['!게임'])
 def run(robot, channel, tokens, user):
     '''게임 함'''
 
