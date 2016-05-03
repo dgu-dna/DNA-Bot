@@ -11,8 +11,6 @@ CACHE_DEFAULT_URL = './apps/memo_cache/memo_cache.json'
 @on_command(['!메모', '!ㅁㅁ', '!aa'])
 def run(robot, channel, tokens, user):
     '''메모 기억해드림'''
-    print type(user)
-    user = str(user)        # user default type check
     jdat = json.loads(open(CACHE_DEFAULT_URL).read())
     token_count = len(tokens)
     msg = ''
