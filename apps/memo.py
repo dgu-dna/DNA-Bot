@@ -3,17 +3,19 @@ from __future__ import unicode_literals
 from decorators import on_command
 from time import localtime, strftime
 import os
+CACHE_DEFAULT_URL = './apps/memo_cache/'
+
 
 @on_command(['!메모', '!ㅁㅁ', '!aa'])
 def run(robot, channel, tokens, user):
     '''메모 기억해드림'''
     token_count = len(tokens)
     msg = ''
-    if token_count < 1 or tokens[0] == '부분' or tokens[0] == 'ㅂㅂ' or tokens[0] == 'qq' or tokens[0] == 'ㅃ':
-        if not os.path.isfile('/home/simneol/hongmoa/apps/memo_cache/'+str(user)):
+    if token_count < 1 or tokens[0] in ['부분', 'ㅂㅂ', 'qq', 'ㅃ']:
+        if not os.path.isfile(CACHE_DEFAULT_URL + str(user)):
             msg = '기억했던 내용이 없습니다. 사용법) !메모 <기억할 내용> [<메모가 들어갈 번호>]'
         else:
-            f = open('/home/simneol/hongmoa/apps/memo_cache/'+str(user), 'r')
+            f = open(CACHE_DEFAULT_URL + str(user), 'r')
             start_num = -1
             end_num = -1
             if token_count >= 2:
@@ -37,8 +39,7 @@ def run(robot, channel, tokens, user):
         tokens = tokens[:-1]
     for s in tokens:
         contents += str(s)+' '
-    #timestamp = strftime('%Y-%m-%d %H:%M:%S', localtime())
-    data = contents[:-1]+'\n'#+' (Added at '+timestamp+')\n'
+    data = contents[:-1]+'\n'
     insertLine('/home/simneol/hongmoa/apps/memo_cache/'+str(user), data, line)
 
     msg = '< '+contents[:-1]+' > 을(를) 기억했습니다.'
@@ -57,8 +58,3 @@ def insertLine(file, data, idx):
             out_file.write(line)
         if idx == -1:
             out_file.write(data)
-
-if "__main__" == __name__:
-    my = 12345
-    msg = 'mymymy'
-    msg = str(my)+msg
