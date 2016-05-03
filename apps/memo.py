@@ -2,59 +2,41 @@
 from __future__ import unicode_literals
 from decorators import on_command
 from time import localtime, strftime
+from slackutils import cat_token
 import os
-CACHE_DEFAULT_URL = './apps/memo_cache/'
+import json
+CACHE_DEFAULT_URL = './memo_cache/memo_cache.json'
 
 
 @on_command(['!메모', '!ㅁㅁ', '!aa'])
 def run(robot, channel, tokens, user):
     '''메모 기억해드림'''
+    print type(user)
+    user = str(user)        # user default type check
+    jdat = json.loads(open(CACHE_DEFAULT_PATH).read())
     token_count = len(tokens)
     msg = ''
     if token_count < 1 or tokens[0] in ['부분', 'ㅂㅂ', 'qq', 'ㅃ']:
-        if not os.path.isfile(CACHE_DEFAULT_URL + str(user)):
-            msg = '기억했던 내용이 없습니다. 사용법) !메모 <기억할 내용> [<메모가 들어갈 번호>]'
+        if user not in jdat:
+            msg = '기억했던 내용이 없음. 사용법) !메모 <내용> [<메모가 들어갈 번호>]'
         else:
-            f = open(CACHE_DEFAULT_URL + str(user), 'r')
-            start_num = -1
-            end_num = -1
-            if token_count >= 2:
-                start_num = int(tokens[1])
-            if token_count >= 3:
-                end_num = int(tokens[2])
-            line = f.readline()
-            line_num = 0
-            msg = ''
-            if line:
-                while line:
-                    line_num += 1
-                    if (start_num == -1 or line_num >= start_num) and (end_num == -1 or line_num <= end_num):
-                        msg += '>*'+('%3s'%(str(line_num)+':'))+'* '+line
-                    line = f.readline()
+            div_idx = [None, None]
+            if 1 < token_count and token_count < 4:
+                for idx, token in enumerate(tokens[1:]):
+                    div_idx[idx] = int(token) - (1 - idx)
+            memo = jdat[user][div_idx[0]:div_idx[1]]
+            indexed_memo = ['>*%3s' % (str(jdat[user].index(line) + 1) +
+                            ':') + '* ' + line for line in memo]
+            joined_memo = map(''.join, indexed_memo)
+            msg = '\n'.join(joined_memo)
         return channel, msg
-    contents = ''
-    line = -1
+    line = len(jdat[user]) + 1
     if tokens[-1].isdigit():
         line = int(tokens[-1])
         tokens = tokens[:-1]
-    for s in tokens:
-        contents += str(s)+' '
-    data = contents[:-1]+'\n'
-    insertLine('/home/simneol/hongmoa/apps/memo_cache/'+str(user), data, line)
-
-    msg = '< '+contents[:-1]+' > 을(를) 기억했습니다.'
+    contents = cat_token(tokens, 0)
+    jdat[user].insert(line - 1, contents)
+    with open(DEFAULT_PATH, 'w') as fp:
+        json.dump(jdat, fp, indent=4)
+    msg = '< '+contents+' > 을(를) 기억함.'
     return channel, msg
-
-
-def insertLine(file, data, idx):
-    with open(file, "r") as in_file:
-        buf = in_file.readlines()
-    with open(file, "w") as out_file:
-        i = 0
-        for line in buf:
-            i += 1
-            if i == idx:
-                line = data + line
-            out_file.write(line)
-        if idx == -1:
-            out_file.write(data)
