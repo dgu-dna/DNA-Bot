@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from decorators import on_command
-from slackutils import cat_token, isNumberber, get_nickname
+from slackutils import cat_token, isNumber, get_nickname
 from time import localtime, strftime
 from subprocess import check_output
 import os
