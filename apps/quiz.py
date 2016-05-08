@@ -42,7 +42,7 @@ def getAnswer(channel):
     cdat = json.loads(open(CACHE_DEFAULT_URL + channel + '.json').read())
     answer = re.sub(r'\s*\(.*\)', '', cdat['answer'])
     hint = re.sub(r'.*\(', '(', cdat['answer'])
-    if hint == ans:
+    if hint == cdat['answer']:
         hint = ''
     return answer, hint
 

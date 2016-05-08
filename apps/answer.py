@@ -38,17 +38,17 @@ def run(robot, channel, tokens, user):
         try_answer = re.sub(r'\s*\*\s*|~|\?|\[|\]|♥|\.|!|_|,|\s', '', cat_token(tokens,0))
         comp_answer = re.sub(r'\s*\*\s*|~|\?|\[|\]|♥|\.|!|_|,|\s', '', answer)
 
-        msg = '정답은 `'+answer+'` '+hint+' (출제:'+insert_dot(quiz['user'][chan_info['q_num']-1])+')'
+        msg = '정답은 `'+answer+'` '+hint+' (출제:'+insert_dot(qdat['user'][cdat['q_num']-1])+')'
 
         if comp_answer.lower() == try_answer.lower():
-            chan_info['solved'].append(chan_info['q_num'])
+            cdat['solved'].append(cdat['q_num'])
             msg = ':o: '+ insert_dot(nickname) +', 맞았음. \n'+msg
-            chan_info['correct'] += 1
-            if nickname in chan_info['correct_user']:
-                chan_info['correct_cnt'][chan_info['correct_user'].index(nickname)] += 1
+            cdat['correct'] += 1
+            if nickname in cdat['correct_user']:
+                cdat['correct_cnt'][cdat['correct_user'].index(nickname)] += 1
             else:
-                chan_info['correct_user'].append(nickname)
-                chan_info['correct_cnt'].append(1)
+                cdat['correct_user'].append(nickname)
+                cdat['correct_cnt'].append(1)
         else:
             if channel[0] == 'C':
                 msg = ':x: '+insert_dot(nickname)+', 틀렸음.'
@@ -56,8 +56,8 @@ def run(robot, channel, tokens, user):
             else:
                 msg = ':x: '+insert_dot(nickname)+', 틀렸음. \n'+msg
 
-        if len(chan_info['solved']) >= chan_info['q_max']:
-            tim = chan_info['start_time'].split(' ')
+        if len(cdat['solved']) >= cdat['q_max']:
+            tim = cdat['start_time'].split(' ')
             dt_i = datetime(int(tim[0]), int(tim[1]), int(tim[2]), int(tim[3]), int(tim[4]), int(tim[5]), 0)
             dt_f = datetime.today()
             dt = dt_f - dt_i
@@ -71,9 +71,9 @@ def run(robot, channel, tokens, user):
                 elap += str(int((sec % 3600) // 60))+'분 '+str(int(sec % 60))+'초'
             else:
                 elap += str(int(sec % 60))+'초'
-            msg += '\n문제집 내의 모든 문제를 품. '+str(chan_info['correct'])+'/'+str(chan_info['q_max'])+'문제 정답. (소요시간 : '+elap+')\n'
-            userlist = chan_info['correct_user']
-            countlist = chan_info['correct_cnt']
+            msg += '\n문제집 내의 모든 문제를 품. '+str(cdat['correct'])+'/'+str(cdat['q_max'])+'문제 정답. (소요시간 : '+elap+')\n'
+            userlist = cdat['correct_user']
+            countlist = cdat['correct_cnt']
             countlist, userlist = zip(*sorted(zip(countlist, userlist), reverse=True))
             for user in userlist:
                 if userlist.index(user) == 0:
