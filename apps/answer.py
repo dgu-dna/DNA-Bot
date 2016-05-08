@@ -38,7 +38,7 @@ def run(robot, channel, tokens, user):
         try_answer = re.sub(r'\s*\*\s*|~|\?|\[|\]|♥|\.|!|_|,|\s', '', cat_token(tokens,0))
         comp_answer = re.sub(r'\s*\*\s*|~|\?|\[|\]|♥|\.|!|_|,|\s', '', answer)
 
-        msg = '정답은 `'+answer+'` '+hint+' (출제:'+insert_dot(qdat['user'][cdat['q_num']-1])+')'
+        msg = '정답은 `'+answer+'` '+hint+' (출제:'+insert_dot(qdat['user'][cdat['q_num']-1])+')\n'
 
         if comp_answer.lower() == try_answer.lower():
             cdat['solved'].append(cdat['q_num'])
@@ -54,6 +54,7 @@ def run(robot, channel, tokens, user):
                 msg = ':x: '+insert_dot(nickname)+', 틀렸음.'
                 return channel, msg
             else:
+                cdat['solved'].append(cdat['q_num'])
                 msg = ':x: '+insert_dot(nickname)+', 틀렸음. \n'+msg
 
         if len(cdat['solved']) >= cdat['q_max']:
@@ -74,12 +75,13 @@ def run(robot, channel, tokens, user):
             msg += '\n문제집 내의 모든 문제를 품. '+str(cdat['correct'])+'/'+str(cdat['q_max'])+'문제 정답. (소요시간 : '+elap+')\n'
             userlist = cdat['correct_user']
             countlist = cdat['correct_cnt']
-            countlist, userlist = zip(*sorted(zip(countlist, userlist), reverse=True))
-            for user in userlist:
-                if userlist.index(user) == 0:
-                    msg += ':trophy:  '+insert_dot(user) +': '+str(countlist[userlist.index(user)])+'문제\n'
-                else:
-                    msg += ' '*9+insert_dot(user) +': '+str(countlist[userlist.index(user)])+'문제\n'
+            if len(userlist) > 0:
+                countlist, userlist = zip(*sorted(zip(countlist, userlist), reverse=True))
+                for user in userlist:
+                    if userlist.index(user) == 0:
+                        msg += ':trophy:  '+insert_dot(user) +': '+str(countlist[userlist.index(user)])+'문제\n'
+                    else:
+                        msg += ' '*9+insert_dot(user) +': '+str(countlist[userlist.index(user)])+'문제\n'
             os.remove(infoFile)
             return channel, msg
         getRandomQuestion(channel)

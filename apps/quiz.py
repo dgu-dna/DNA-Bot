@@ -24,7 +24,7 @@ def getRandomQuestion(channel):
     qdat = json.loads(quizRaw)
     cdat['solved'].append(cdat['q_num'])
     rand_num = random.randrange(0, qdat['q_num'])
-    while rand_num + 1 in chan_info['solved']:
+    while rand_num + 1 in cdat['solved']:
         rand_num = random.randrange(0, qdat['q_num'])
     question = qdat['question'][rand_num]
     answer = qdat['answer'][rand_num]
@@ -141,8 +141,8 @@ def run(robot, channel, tokens, user):
     elif tokens[0] == '문제집':
         all_file = check_output(['ls', CACHE_CATEGORY_URL])
         all_file = re.sub('.json', '', all_file)
-        all_file = re.sub('.\n', ' || ', all_file)
-        msg = '>*여태 등록된 문제집들*\n' + all_file
+        # all_file = re.sub('.\n', ' || ', all_file)
+        msg = '>*여태 등록된 문제집들*\n' + ' || '.join(all_file.split('\n'))
         # msg += ' || '.join(all_file.split('.json\n'))
         # for s in all_file.split('\n'):
         #     msg += s[:-5]+' || '
@@ -153,13 +153,13 @@ def run(robot, channel, tokens, user):
             return channel, '자세한 사용법은...(`!도움 퀴즈`)'
         if os.path.isfile(infoFile):
             return channel, '이미 진행중인 문제집이 있음. `!퀴즈`'
-        if not os.path.isfile(infoFile):
+        if not os.path.isfile(CACHE_CATEGORY_URL + tokens[1] + '.json'):
             return channel, '그런 문제집은 없음.'
         quizRaw = open(CACHE_CATEGORY_URL + tokens[1] + '.json').read()
         qdat = json.loads(quizRaw)
         rand_num = random.randrange(0, qdat['q_num'])
-        question = quiz['question'][rand_num]
-        answer = quiz['answer'][rand_num]
+        question = qdat['question'][rand_num]
+        answer = qdat['answer'][rand_num]
         cdat = {}
         cdat['name'] = nickname
         cdat['start_time'] = strftime('%Y %m %d %H %M %S', localtime())
