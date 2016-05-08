@@ -14,7 +14,7 @@ import imp
 settings = imp.load_source('settings', './settings.py')
 WEB_API_TOKEN = settings.WEB_API_TOKEN
 CACHE_DEFAULT_URL = './apps/quiz_cache/'
-CACHE_CATEGORY_URL = './apps/quiz_cache/category'
+CACHE_CATEGORY_URL = './apps/quiz_cache/category/'
 
 
 def getRandomQuestion(channel):
