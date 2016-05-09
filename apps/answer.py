@@ -21,14 +21,14 @@ def compAnswer(ans1, ans2):
 @on_command(['!정답', '!ㅈㄷ', '!we'])
 def run(robot, channel, tokens, user):
     ''''''
-    infoFile = CACHE_PATH + channel + '.json'
+    info_file = CACHE_PATH + channel + '.json'
     nickname = get_nickname(user)
     qdat = {}
     if len(tokens) < 1:
         return channel, '자세한 사용법은 ... `!도움 퀴즈`'
 
-    if os.path.isfile(infoFile):
-        cdat = json.loads(open(infoFile).read())
+    if os.path.isfile(info_file):
+        cdat = json.loads(open(info_file).read())
         quizRaw = open(CATEGORY_PATH + cdat['category'] + '.json').read()
         qdat = json.loads(quizRaw)
         answer, hint = get_answer(channel)
@@ -80,8 +80,10 @@ def run(robot, channel, tokens, user):
                         msg += ':trophy:  '+insert_dot(user) +': '+str(countlist[userlist.index(user)])+'문제\n'
                     else:
                         msg += ' '*9+insert_dot(user) +': '+str(countlist[userlist.index(user)])+'문제\n'
-            os.remove(infoFile)
+            os.remove(info_file)
             return channel, msg
+        with open(info_file, 'w') as fp:
+            json.dump(cdat, fp, indent=4)
         get_random_question(channel)
         msg += get_message(channel)
     else:
