@@ -5,7 +5,7 @@ from apps.slackutils import cat_token
 
 
 @on_command(['!계산'])
-def run(robot, channel, tokens, user):
+def run(robot, channel, tokens, user, command):
     '''간단한 수식 계산'''
     msg = '사용법 오류'
     returnType = 'DEC'

@@ -21,7 +21,7 @@ def gameInit(channelInfo):
 
 
 @on_command(['!숫자야구', '!ㅅㅈㅇㄱ'])
-def run(robot, channel, tokens, user):
+def run(robot, channel, tokens, user, command):
     ''''''
     jsonFile = CACHE_DEFAULT_URL + str(channel) + '.json'
     stat, stat_msg, channelInfo = checkStatus(channel, tokens, GAME_NAME)

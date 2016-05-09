@@ -9,7 +9,7 @@ import os
 
 
 @on_command(['!기억', '!ㄱㅇ', '!rd'])
-def run(robot, channel, tokens, user):
+def run(robot, channel, tokens, user, command):
     '''단어 기억해드림'''
     msg = ''
     if len(tokens) == 0:
@@ -53,4 +53,3 @@ def run(robot, channel, tokens, user):
         f.close()
         msg = str(tokens[0])+'에 대해 '+desc[:-1]+'(이)라고 기억했어요!'
     return channel, msg
-

@@ -108,7 +108,7 @@ def getMessage(type, channel=None, gameName=None):
 
 
 @on_command(['!게임'])
-def run(robot, channel, tokens, user):
+def run(robot, channel, tokens, user, command):
     '''게임 함'''
 
     jsonFile = CACHE_DEFAULT_URL + str(channel) + '.json'
