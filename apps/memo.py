@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from decorators import on_command
+from apps.decorators import on_command
+from apps.slackutils import cat_token
 from time import localtime, strftime
-from slackutils import cat_token
 import os
 import json
 CACHE_DEFAULT_URL = './apps/memo_cache/memo_cache.json'

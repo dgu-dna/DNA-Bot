@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from decorators import on_command
-from slackutils import cat_token, insert_dot, get_nickname
+from apps.decorators import on_command
+from apps.slackutils import cat_token, insert_dot, get_nickname
 from time import localtime, strftime
 from datetime import datetime
-from quiz import getAnswer, getRandomQuestion, getMessage
+from quiz import get_answer, get_random_question, get_message
 import os
 import json
 import time
@@ -33,7 +33,7 @@ def run(robot, channel, tokens, user):
         cdat = json.loads(open(infoFile).read())
         quizRaw = open(CATEGORY_PATH + cdat['category'] + '.json').read()
         qdat = json.loads(quizRaw)
-        answer, hint = getAnswer(channel)
+        answer, hint = get_answer(channel)
 
         try_answer = re.sub(r'\s*\*\s*|~|\?|\[|\]|♥|\.|!|_|,|\s', '', cat_token(tokens,0))
         comp_answer = re.sub(r'\s*\*\s*|~|\?|\[|\]|♥|\.|!|_|,|\s', '', answer)
@@ -84,8 +84,8 @@ def run(robot, channel, tokens, user):
                         msg += ' '*9+insert_dot(user) +': '+str(countlist[userlist.index(user)])+'문제\n'
             os.remove(infoFile)
             return channel, msg
-        getRandomQuestion(channel)
-        msg += getMessage(channel)
+        get_random_question(channel)
+        msg += get_message(channel)
     else:
         return channel, '진행중인 문제집이 없음. 자세한 사용법은...(`!도움 퀴즈`)'
     return channel, msg

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from decorators import on_command
+from apps.decorators import on_command
+from apps.slackutils import insert_dot, get_nickname
 from time import localtime, strftime
 import json
 import urllib
 import os
 from subprocess import check_output
-from slackutils import insert_dot, get_nickname
 
 
 @on_command(['!기억', '!ㄱㅇ', '!rd'])
