@@ -17,20 +17,22 @@ def get_random_question(channel):
     quizRaw = open(CACHE_CATEGORY_URL + cdat['category'] + '.json').read()
     qdat = json.loads(quizRaw)
     cdat['solved'].append(cdat['q_num'])
-    if len(cdat['solved']) < cdat['q_max']:
+    if len(cdat['solved']) >= cdat['q_max']:
+        return False
+    rand_num = random.randrange(0, qdat['q_num'])
+    while rand_num + 1 in cdat['solved']:
         rand_num = random.randrange(0, qdat['q_num'])
-        while rand_num + 1 in cdat['solved']:
-            rand_num = random.randrange(0, qdat['q_num'])
-        question = qdat['question'][rand_num]
-        answer = qdat['answer'][rand_num]
-        cdat['last_solved'] = int(round(time.time() * 1000))
-        cdat['q_num'] = rand_num + 1
-        cdat['question'] = question
-        cdat['answer'] = answer
-        cdat['skip_count'] = []
-        cdat['give_up'] = []
+    question = qdat['question'][rand_num]
+    answer = qdat['answer'][rand_num]
+    cdat['last_solved'] = int(round(time.time() * 1000))
+    cdat['q_num'] = rand_num + 1
+    cdat['question'] = question
+    cdat['answer'] = answer
+    cdat['skip_count'] = []
+    cdat['give_up'] = []
     with open(infoFile, 'w') as fp:
         json.dump(cdat, fp, indent=4)
+    return True
 
 
 def get_answer(channel):
