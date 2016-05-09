@@ -116,7 +116,7 @@ def run(robot, channel, tokens, user, command):
     else:
         message = ':star2: ' + time_message + '석식 :star2:\n'
 
-    html = urllib.urlopen(DGUCOOP_URL)
+    html = urllib.request.urlopen(DGUCOOP_URL)
     soup = BeautifulSoup(html, 'lxml')
     courses = soup.find_all(True, {'bgcolor': '#FFFFFF'})
 
