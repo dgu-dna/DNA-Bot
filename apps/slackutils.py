@@ -22,8 +22,8 @@ def insert_dot(msg):
 
 def get_nickname(user):
     url = 'https://slack.com/api/users.info?token='+WEB_API_TOKEN+'&user='+str(user)+'&pretty=1'
-    response = urllib.urlopen(url)
-    data = json.loads(response.read())
+    response = urllib.request.urlopen(url)
+    data = json.loads(response.read().decode('utf-8'))
     return str(data['user']['name'])
 
 

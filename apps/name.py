@@ -6,7 +6,6 @@ from time import localtime, strftime
 import json
 import urllib
 import os
-from subprocess import check_output
 
 
 @on_command(['!기억', '!ㄱㅇ', '!rd'])
@@ -24,11 +23,9 @@ def run(robot, channel, tokens, user):
     full_line = ''
     if len(tokens) == 1:
         if str(tokens[0]) == '?':
-            all_file = check_output(['ls', '/home/simneol/hongmoa/apps/name_cache/'])
+            all_file = os.listdir('./apps/name_cache/')
             msg = '제가 여태까지 기억한 것들은 아래와 같아요!\n'
-            for s in all_file.split('\n'):
-                msg += s+' || '
-            msg = msg[:-8]
+            msg += ' || '.join(all_file)
             return channel, msg
         if not f:
             msg = str(tokens[0])+'에 대해 기억나는게 없어요 ㅠㅡㅠ'
@@ -55,5 +52,5 @@ def run(robot, channel, tokens, user):
         f.write(full_line)
         f.close()
         msg = str(tokens[0])+'에 대해 '+desc[:-1]+'(이)라고 기억했어요!'
-#    msg = str(data['user']['name'])+'이(가) '+strftime('%Y-%m-%d %H:%M:%S',localtime())+'에 불러주었어요!'
     return channel, msg
+
