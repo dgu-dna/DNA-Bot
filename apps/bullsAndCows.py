@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 from apps.decorators import on_command
 from apps.slackutils import get_nickname, isNumber
-from gameInfo import GAME_LIST
-from game import *
+from apps.gameInfo import GAME_LIST
+from apps.game import *
 import re
 import os
 import json

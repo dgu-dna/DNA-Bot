@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from apps.decorators import on_command
 from apps.slackutils import get_nickname, isNumber
-from gameInfo import GAME_LIST, GAME_INFO, MODE_LIST
+from apps.gameInfo import GAME_LIST, GAME_INFO, MODE_LIST
 import os
 import json
 import time
@@ -50,7 +50,7 @@ def getMessage(type, channel=None, gameName=None):
             msg += '\n> [참가 중인 멤버]\n'
             mems = [(str(i+1), v) for i, v in enumerate(channelInfo['member'])]
             jmems = map(''.join, mems)
-            msg += '\n'.join(map(lambda (s): '>*'+s[:1]+'.* '+s[1:], jmems))
+            msg += '\n'.join(map(lambda s: '>*'+s[:1]+'.* '+s[1:], jmems))
             if channelInfo['status'] == STATUS_GAME_READY:
                 msg += '\n게임 대기 중...'
             elif channelInfo['status'] == STATUS_GAME_START:

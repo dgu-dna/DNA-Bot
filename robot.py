@@ -98,7 +98,7 @@ class Robot(object):
                 file = open('booting','r')
                 debug_chn = file.readline()
                 #self.client.rtm_send_message(reboot_chn,'rebooted successfully')
-		self.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=debug_chn,text='나 왔음')
+                self.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=debug_chn,text='나 왔음')
                 os.remove('booting')
             while True:
                 events = self.client.rtm_read()

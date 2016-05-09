@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from apps.decorators import on_command
-from slackutils import cat_token, get_nickname
+from apps.slackutils import cat_token, get_nickname
 import time
 
 

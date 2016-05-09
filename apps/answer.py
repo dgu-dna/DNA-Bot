@@ -4,7 +4,7 @@ from apps.decorators import on_command
 from apps.slackutils import cat_token, insert_dot, get_nickname
 from time import localtime, strftime
 from datetime import datetime
-from quiz import get_answer, get_random_question, get_message
+from apps.quiz import get_answer, get_random_question, get_message
 import os
 import json
 import time
