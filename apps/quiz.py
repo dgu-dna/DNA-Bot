@@ -12,8 +12,8 @@ CACHE_CATEGORY_URL = './apps/quiz_cache/category/'
 
 
 def get_random_question(channel):
-    infoFile = CACHE_DEFAULT_URL + channel + '.json'
-    cdat = json.loads(open(infoFile).read())
+    info_file = CACHE_DEFAULT_URL + channel + '.json'
+    cdat = json.loads(open(info_file).read())
     quizRaw = open(CACHE_CATEGORY_URL + cdat['category'] + '.json').read()
     qdat = json.loads(quizRaw)
     cdat['solved'].append(cdat['q_num'])
@@ -30,7 +30,7 @@ def get_random_question(channel):
     cdat['answer'] = answer
     cdat['skip_count'] = []
     cdat['give_up'] = []
-    with open(infoFile, 'w') as fp:
+    with open(info_file, 'w') as fp:
         json.dump(cdat, fp, indent=4)
     return True
 
@@ -65,7 +65,7 @@ def get_message(channel):
 @on_command(['!퀴즈'])
 def run(robot, channel, tokens, user):
     '''문제 내드림'''
-    infoFile = CACHE_DEFAULT_URL + channel + '.json'
+    info_file = CACHE_DEFAULT_URL + channel + '.json'
     nickname = get_nickname(user)
     msg = ''
     if len(tokens) < 1:
@@ -111,18 +111,18 @@ def run(robot, channel, tokens, user):
 
     elif tokens[0] == '포기':
         if channel[0] == 'D':
-            os.remove(infoFile)
+            os.remove(info_file)
             return channel, '진행중인 퀴즈를 포기함'
-        cdat = json.loads(open(infoFile).read())
+        cdat = json.loads(open(info_file).read())
         if user in cdat['give_up']:
             return channel, '이미 포기에 투표함'
         if len(cdat['give_up']) < 2:
             cdat['give_up'].append(user)
-            with open(infoFile, 'w') as fp:
+            with open(info_file, 'w') as fp:
                 json.dump(cdat, fp, indent=4)
             return channel, str(3 - len(cdat['give_up']))+'명 더 필요함'
-        os.remove(cdat)
-        msg = '진행중인 퀴즈 를 포기함'
+        os.remove(info_file)
+        msg = '진행중인 퀴즈를 포기함'
 
     elif tokens[0] == '조회':
         if len(tokens) < 2:
@@ -143,7 +143,7 @@ def run(robot, channel, tokens, user):
     elif tokens[0] == '시작':
         if len(tokens) < 2:
             return channel, '자세한 사용법은...(`!도움 퀴즈`)'
-        if os.path.isfile(infoFile):
+        if os.path.isfile(info_file):
             return channel, '이미 진행중인 문제집이 있음. `!퀴즈`'
         if not os.path.isfile(CACHE_CATEGORY_URL + tokens[1] + '.json'):
             return channel, '그런 문제집은 없음.'
@@ -170,19 +170,19 @@ def run(robot, channel, tokens, user):
         cdat['question'] = question
         cdat['answer'] = answer
         cdat['category'] = tokens[1]
-        with open(infoFile, 'w') as fp:
+        with open(info_file, 'w') as fp:
             json.dump(cdat, fp, indent=4)
         msg = get_message(channel)
 
     elif tokens[0] == '패스':
-        if not os.path.isfile(infoFile):
+        if not os.path.isfile(info_file):
             return channel, '자세한 사용법은... `!퀴즈`'
-        cdat = json.loads(open(infoFile).read())
+        cdat = json.loads(open(info_file).read())
         if user in cdat['skip_count']:
             return channel, '이미 패스에 투표함'
         if len(cdat['skip_count']) < 1:
             cdat['skip_count'].append(user)
-            with open(infoFile, 'w') as fp:
+            with open(info_file, 'w') as fp:
                 json.dump(cdat, fp, indent=4)
             return channel, str(2 - len(cdat['skip_count'])) + '명 더 필요함'
         quizRaw = open(CACHE_CATEGORY_URL + cdat['category'] + '.json').read()
