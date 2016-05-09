@@ -6,7 +6,7 @@ import time
 
 
 @on_command(['!알람', '!ㅇㄹ'])
-def run(robot, channel, tokens, user):
+def run(robot, channel, tokens, user, command):
     '''일정시간 이후에 알람 울려줌'''
     msg = '사용법 오류'
     if len(tokens) > 1:

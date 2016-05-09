@@ -9,7 +9,7 @@ CACHE_DEFAULT_URL = './apps/memo_cache/memo_cache.json'
 
 
 @on_command(['!메모', '!ㅁㅁ', '!aa'])
-def run(robot, channel, tokens, user):
+def run(robot, channel, tokens, user, command):
     '''메모 기억해드림'''
     jdat = json.loads(open(CACHE_DEFAULT_URL).read())
     token_count = len(tokens)

@@ -19,7 +19,7 @@ def compAnswer(ans1, ans2):
 
 
 @on_command(['!정답', '!ㅈㄷ', '!we'])
-def run(robot, channel, tokens, user):
+def run(robot, channel, tokens, user, command):
     ''''''
     info_file = CACHE_PATH + channel + '.json'
     nickname = get_nickname(user)

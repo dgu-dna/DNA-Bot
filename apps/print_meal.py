@@ -72,7 +72,7 @@ def remove_noise(data):
 
 
 @on_command(['!밥', '!학식', '!ㅎㅅ', '!gt'])
-def run(robot, channel, tokens, user):
+def run(robot, channel, tokens, user, command):
     '''학식 메뉴보여줌'''
     COURSE_INFO = copy.deepcopy(ORIGINAL_INFO)
     now_t = datetime.today().time()

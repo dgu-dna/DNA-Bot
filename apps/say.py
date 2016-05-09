@@ -4,7 +4,7 @@ from apps.decorators import on_command
 from apps.slackutils import cat_token
 
 @on_command(['!말해'])
-def run(robot, channel, tokens, user):
+def run(robot, channel, tokens, user, command):
     '''시킨대로 말함'''
     if len(tokens) > 1:
         if tokens[0][1] == '#':

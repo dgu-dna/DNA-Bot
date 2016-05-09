@@ -32,11 +32,11 @@ def on_command(commands):
 
         @wraps(func)
         def _decorator(*args, **kwargs):
-            robot, channel, message, user = args
+            robot, channel, message, user, command = args
             if commands:
                 tokens = _extract_tokens(message)
                 try:
-                    channel, message = func(robot, channel, tokens, user)
+                    channel, message = func(robot, channel, tokens, user, command)
                     if channel:
                         try:
                             robot.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=channel,text=message)

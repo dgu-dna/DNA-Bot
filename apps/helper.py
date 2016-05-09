@@ -5,7 +5,7 @@ import re
 
 
 @on_command(['!도움', '!ㄷㅇ', '!승규야', '!승규'])
-def run(robot, channel, tokens, user):
+def run(robot, channel, tokens, user, command):
     '''도움말 출력 예) `!승규야 메모`'''
     print(type(tokens))
     if len(tokens) < 1:

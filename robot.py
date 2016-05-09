@@ -69,7 +69,7 @@ class Robot(object):
             app = self.apps.get(command, None)
             if not app:
                 continue
-            arguments = (self, channel, payloads, user)
+            arguments = (self, channel, payloads, user, command)
             pool.apply_async(func=app.run, args=arguments)
 
     def extract_messages(self, events):

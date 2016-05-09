@@ -8,7 +8,7 @@ CACHE_DEFAULT_URL = './apps/memo_cache/memo_cache.json'
 
 
 @on_command(['!메모삭제', '!ㅁㅁㅅㅈ', '!aatw'])
-def run(robot, channel, tokens, user):
+def run(robot, channel, tokens, user, command):
     '''메모 지워줌'''
     token_count = len(tokens)
     user = str(user)

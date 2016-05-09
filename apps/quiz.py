@@ -63,7 +63,7 @@ def get_message(channel):
 
 
 @on_command(['!퀴즈'])
-def run(robot, channel, tokens, user):
+def run(robot, channel, tokens, user, command):
     '''문제 내드림'''
     info_file = CACHE_DEFAULT_URL + channel + '.json'
     nickname = get_nickname(user)
