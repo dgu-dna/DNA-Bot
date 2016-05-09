@@ -52,7 +52,10 @@ def run(robot, channel, tokens, user):
                 return channel, msg
             else:
                 msg = ':x: '+insert_dot(nickname)+', 틀렸음. \n'+msg
-
+        with open(info_file, 'w') as fp:
+            json.dump(cdat, fp, indent=4)
+        get_random_question(channel)
+        msg += get_message(channel)
         if len(cdat['solved']) >= cdat['q_max']:
             tim = cdat['start_time'].split(' ')
             dt_i = datetime(int(tim[0]), int(tim[1]), int(tim[2]), int(tim[3]), int(tim[4]), int(tim[5]), 0)
@@ -80,10 +83,6 @@ def run(robot, channel, tokens, user):
                         msg += ' '*9+insert_dot(user) +': '+str(countlist[userlist.index(user)])+'문제\n'
             os.remove(info_file)
             return channel, msg
-        with open(info_file, 'w') as fp:
-            json.dump(cdat, fp, indent=4)
-        get_random_question(channel)
-        msg += get_message(channel)
     else:
         return channel, '진행중인 문제집이 없음. 자세한 사용법은...(`!도움 퀴즈`)'
     return channel, msg
