@@ -39,8 +39,7 @@ def run(robot, channel, tokens, user):
         msg = '정답은 `'+answer+'` '+hint+' (출제:'+insert_dot(qdat['user'][cdat['q_num']-1])+')\n'
 
         if comp_answer.lower() == try_answer.lower():
-            cdat['solved'].append(cdat['q_num'])
-            msg = ':o: '+ insert_dot(nickname) +', 맞았음. \n'+msg
+            msg = ':o: ' + insert_dot(nickname) + ', 맞았음. \n'+msg
             cdat['correct'] += 1
             if nickname in cdat['correct_user']:
                 cdat['correct_cnt'][cdat['correct_user'].index(nickname)] += 1
@@ -52,7 +51,6 @@ def run(robot, channel, tokens, user):
                 msg = ':x: '+insert_dot(nickname)+', 틀렸음.'
                 return channel, msg
             else:
-                cdat['solved'].append(cdat['q_num'])
                 msg = ':x: '+insert_dot(nickname)+', 틀렸음. \n'+msg
 
         if len(cdat['solved']) >= cdat['q_max']:
