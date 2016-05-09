@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 from apps.decorators import on_command
 from apps.slackutils import cat_token, insert_dot, get_nickname
 from time import localtime, strftime

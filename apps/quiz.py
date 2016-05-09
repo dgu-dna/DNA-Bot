@@ -1,18 +1,12 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 from apps.decorators import on_command
 from apps.slackutils import cat_token, isNumber, get_nickname
 from time import localtime, strftime
-from subprocess import check_output
 import os
 import re
 import json
 import time
 import urllib
 import random
-import imp
-settings = imp.load_source('settings', './settings.py')
-WEB_API_TOKEN = settings.WEB_API_TOKEN
 CACHE_DEFAULT_URL = './apps/quiz_cache/'
 CACHE_CATEGORY_URL = './apps/quiz_cache/category/'
 
@@ -57,9 +51,9 @@ def get_message(channel):
     else:
         return '진행 중인 퀴즈가 없음. `!도움 퀴즈`'
     msg += ('> *['+cdat['category']+']---- ' +
-            unicode(cdat['q_num']) + '번 문제  || 총 ' +
-            unicode(cdat['q_max']) + '문제 중 ' +
-            unicode(len(cdat['solved']) + 1) +
+            str(cdat['q_num']) + '번 문제  || 총 ' +
+            str(cdat['q_max']) + '문제 중 ' +
+            str(len(cdat['solved']) + 1) +
             '개 째... || 답안 제출법:* `!정답 <답안>`\n```' +
             cdat['question'] + '```')
     return msg
@@ -123,7 +117,7 @@ def run(robot, channel, tokens, user):
             cdat['give_up'].append(user)
             with open(infoFile, 'w') as fp:
                 json.dump(cdat, fp, indent=4)
-            return channel, unicode(3 - len(cdat['give_up']))+'명 더 필요함'
+            return channel, str(3 - len(cdat['give_up']))+'명 더 필요함'
         os.remove(cdat)
         msg = '진행중인 퀴즈 를 포기함'
 
@@ -134,19 +128,14 @@ def run(robot, channel, tokens, user):
             return channel, '채널에선 사용할 수 없음'
         quizFile = CACHE_CATEGORY_URL + tokens[1] + '.json'
         qdat = json.loads(open(quizFile).read())
-        msg = tokens[1] + '에는 총 ' + unicode(qdat['q_num']) + '개의 문제가 있음'
+        msg = tokens[1] + '에는 총 ' + str(qdat['q_num']) + '개의 문제가 있음'
         for idx, question in enumerate(qdat['question']):
-            msg += '\n*' + unicode(idx + 1) + '.* ' + question
+            msg += '\n*' + str(idx + 1) + '.* ' + question
 
     elif tokens[0] == '문제집':
-        all_file = check_output(['ls', CACHE_CATEGORY_URL])
-        all_file = re.sub('.json', '', all_file)
-        # all_file = re.sub('.\n', ' || ', all_file)
-        msg = '>*여태 등록된 문제집들*\n' + ' || '.join(all_file.split('\n'))
-        # msg += ' || '.join(all_file.split('.json\n'))
-        # for s in all_file.split('\n'):
-        #     msg += s[:-5]+' || '
-        # msg = msg[:-8]
+        all_file = os.listdir(CACHE_CATEGORY_URL)
+        quiz_list = list(map(lambda x: os.path.splitext(x)[0], all_file))
+        msg = '>*여태 등록된 문제집들*\n' + ' || '.join(quiz_list)
 
     elif tokens[0] == '시작':
         if len(tokens) < 2:
@@ -192,7 +181,7 @@ def run(robot, channel, tokens, user):
             cdat['skip_count'].append(user)
             with open(infoFile, 'w') as fp:
                 json.dump(cdat, fp, indent=4)
-            return channel, unicode(2 - len(cdat['skip_count'])) + '명 더 필요함'
+            return channel, str(2 - len(cdat['skip_count'])) + '명 더 필요함'
         quizRaw = open(CACHE_CATEGORY_URL + cdat['category'] + '.json').read()
         qdat = json.loads(quizRaw)
         answer, hint = get_answer(channel)
