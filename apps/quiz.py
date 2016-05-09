@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from decorators import on_command
-from slackutils import cat_token, isNumber, get_nickname
+from apps.decorators import on_command
+from apps.slackutils import cat_token, isNumber, get_nickname
 from time import localtime, strftime
 from subprocess import check_output
 import os
@@ -17,7 +17,7 @@ CACHE_DEFAULT_URL = './apps/quiz_cache/'
 CACHE_CATEGORY_URL = './apps/quiz_cache/category/'
 
 
-def getRandomQuestion(channel):
+def get_random_question(channel):
     infoFile = CACHE_DEFAULT_URL + channel + '.json'
     cdat = json.loads(open(infoFile).read())
     quizRaw = open(CACHE_CATEGORY_URL + cdat['category'] + '.json').read()
@@ -38,7 +38,7 @@ def getRandomQuestion(channel):
         json.dump(cdat, fp, indent=4)
 
 
-def getAnswer(channel):
+def get_answer(channel):
     cdat = json.loads(open(CACHE_DEFAULT_URL + channel + '.json').read())
     answer = re.sub(r'\s*\(.*\)', '', cdat['answer'])
     hint = re.sub(r'.*\(', '(', cdat['answer'])
@@ -47,7 +47,7 @@ def getAnswer(channel):
     return answer, hint
 
 
-def getMessage(channel):
+def get_message(channel):
     msg = ''
     if channel[0] == 'C':
         msg += '> `채널 전체 문제`\n'
@@ -72,7 +72,7 @@ def run(robot, channel, tokens, user):
     nickname = get_nickname(user)
     msg = ''
     if len(tokens) < 1:
-        return channel, getMessage(channel)
+        return channel, get_message(channel)
 
     if tokens[0] in ['등록', '추가']:
         if len(tokens) != 4:
@@ -180,7 +180,7 @@ def run(robot, channel, tokens, user):
         cdat['category'] = tokens[1]
         with open(infoFile, 'w') as fp:
             json.dump(cdat, fp, indent=4)
-        msg = getMessage(channel)
+        msg = get_message(channel)
 
     elif tokens[0] == '패스':
         if not os.path.isfile(infoFile):
@@ -195,10 +195,10 @@ def run(robot, channel, tokens, user):
             return channel, unicode(2 - len(cdat['skip_count'])) + '명 더 필요함'
         quizRaw = open(CACHE_CATEGORY_URL + cdat['category'] + '.json').read()
         qdat = json.loads(quizRaw)
-        answer, hint = getAnswer(channel)
+        answer, hint = get_answer(channel)
         msg = '정답은 `'+answer+'` '+hint+' (출제:'+quiz['user'][chan_info['q_num']-1][:1]+'·'+quiz['user'][chan_info['q_num']-1][1:]+')\n'
-        getRandomQuestion(channel)
-        msg += getMessage(channel)
+        get_random_question(channel)
+        msg += get_message(channel)
     else:
         msg = '자세한 사용법은...(`!도움 퀴즈`)'
     return channel, msg

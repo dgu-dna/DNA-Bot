@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from decorators import on_command
-from slackutils import get_nickname, isNumber
+from apps.decorators import on_command
+from apps.slackutils import get_nickname, isNumber
 from gameInfo import GAME_LIST
 from game import *
 import re

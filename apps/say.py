@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from decorators import on_command
-from slackutils import cat_token
+from apps.decorators import on_command
+from apps.slackutils import cat_token
 
 @on_command(['!말해'])
 def run(robot, channel, tokens, user):
