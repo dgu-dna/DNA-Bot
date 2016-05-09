@@ -44,11 +44,10 @@ def on_command(commands):
                             robot.client.rtm_send_message(channel, message)
                         return message
                     else:
-                        print "[Warn] Couldn't delivered a message"
+                        print("[Warn] Couldn't delivered a message")
                 except:
-                    print "[Error] Couldn't delivered the message"
+                    print("[Error] Couldn't delivered the message")
                     traceback.print_exc()
-                    print
                     return None
             return ''
         return _decorator

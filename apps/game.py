@@ -35,9 +35,9 @@ def getMessage(type, channel=None, gameName=None):
         return '진행중인 게임 없음. 자세한 사용법은...(`!도움 게임`)'
     elif type == MESSAGE_TYPE_GAME_MEMBER:
         if channel is None:
-            print '''
+            print('''
             You need to pass argument "channel" for MESSAGE_TYPE_GAME_MEMBER
-            '''
+            ''')
             return 'Exception ! Please switch on debug mode'
         if os.path.isfile(CACHE_DEFAULT_URL + str(channel) + '.json'):
             loadDta = open(CACHE_DEFAULT_URL + str(channel) + '.json').read()
@@ -71,9 +71,9 @@ def getMessage(type, channel=None, gameName=None):
         return '이미 게임이 시작됨'
     elif type == MESSAGE_TYPE_CURRENT_USER:
         if channel is None:
-            print '''
+            print('''
             You need to pass argument "channel" for MESSAGE_TYPE_CURRENT_USER
-            '''
+            ''')
             return 'Exception ! Please switch on debug mode'
         if os.path.isfile(CACHE_DEFAULT_URL + str(channel) + '.json'):
             loadDta = open(CACHE_DEFAULT_URL + str(channel) + '.json').read()
@@ -93,9 +93,9 @@ def getMessage(type, channel=None, gameName=None):
         return '다른 게임이 진행중임...'
     elif type == MESSAGE_TYPE_FEW_MEMBER:
         if gameName is None:
-            print '''
+            print('''
             You need to pass argument "gameName" for MESSAGE_TYPE_CURRENT_USER
-            '''
+            ''')
             return 'Exception ! Please switch on debug mode'
         minMember = GAME_INFO[gameName]['MIN_NEED_PERSON']
         msg = ('인원이 모자랍니다. ' + gameName + '을(를) 플레이하기 위해서는 ' +
