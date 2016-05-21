@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from apps.decorators import on_command
-from apps.slackutils import cat_token, get_nickname
+from apps.slackutils import cat_token, get_nickname, send_msg
 import time
 
 
@@ -11,6 +11,9 @@ def run(robot, channel, tokens, user, command):
     msg = '사용법 오류'
     if len(tokens) > 1:
         user_name = get_nickname(user)
-        time.sleep(int(tokens[0]))
+        sec = eval(cat_token(tokens, 1))
+        noti_msg = user_name + ', ' + str(sec) + '초 후에 알려주겠음.'
+        send_msg(robot, channel, noti_msg)
+        time.sleep(sec)
         msg = user_name + ', ' + cat_token(tokens, 1)
     return channel, msg
