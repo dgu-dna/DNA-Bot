@@ -28,6 +28,8 @@ def run(robot, channel, tokens, user, command):
             joined_memo = map(''.join, indexed_memo)
             msg = '\n'.join(joined_memo)
         return channel, msg
+    if user not in jdat:
+        jdat[user] = []
     line = len(jdat[user]) + 1
     if tokens[-1].isdigit() and token_count > 1:
         line = int(tokens[-1])
