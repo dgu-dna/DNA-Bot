@@ -1,5 +1,5 @@
 from apps.decorators import on_command
-from apps.slackutils import cat_token, insert_dot, get_nickname
+from apps.slackutils import cat_token, insert_dot, get_nickname, get_userinfo, send_msg
 from time import localtime, strftime
 from datetime import datetime
 from apps.quiz import get_answer, get_random_question, get_message
@@ -32,14 +32,21 @@ def run(robot, channel, tokens, user, command):
         quizRaw = open(CATEGORY_PATH + cdat['category'] + '.json').read()
         qdat = json.loads(quizRaw)
         answer, hint = get_answer(channel)
-
+        msg = json.loads(open(CACHE_PATH + 'attach.json').read())
         try_answer = re.sub(r'\s*\*\s*|~|\?|\[|\]|♥|\.|!|_|,|\s', '', cat_token(tokens,0))
         comp_answer = re.sub(r'\s*\*\s*|~|\?|\[|\]|♥|\.|!|_|,|\s', '', answer)
-
-        msg = '정답은 `'+answer+'` '+hint+' (출제:'+insert_dot(qdat['user'][cdat['q_num']-1])+')\n'
+        msg[0]['author_link'] += nickname
+        msg[0]['author_name'] = nickname
+        msg[0]['author_icon'] = get_userinfo(user, ['profile', 'image_32'])
+        msg[0]['title'] = answer
+        msg[0]['text'] = hint
+		#msg[0]['field'] = ...
+        #msg = '정답은 `'+answer+'` '+hint+' (출제:'+insert_dot(qdat['user'][cdat['q_num']-1])+')\n'
 
         if comp_answer.lower() == try_answer.lower():
-            msg = ':o: ' + insert_dot(nickname) + ', 맞았음. \n'+msg
+            #msg = ':o: ' + insert_dot(nickname) + ', 맞았음. \n'+msg
+            msg[0]['color'] = '#0fb5a1'
+            msg[0]['thumb_url'] = 'http://feonfun.com/o_mark.png'
             cdat['correct'] += 1
             if nickname in cdat['correct_user']:
                 cdat['correct_cnt'][cdat['correct_user'].index(nickname)] += 1
@@ -69,20 +76,22 @@ def run(robot, channel, tokens, user, command):
                 elap += str(int((sec % 3600) // 60))+'분 '+str(int(sec % 60))+'초'
             else:
                 elap += str(int(sec % 60))+'초'
-            msg += '\n문제집 내의 모든 문제를 품. '+str(cdat['correct'])+'/'+str(cdat['q_max'])+'문제 정답. (소요시간 : '+elap+')\n'
+            msg[0]['text'] += '\n문제집 내의 모든 문제를 품. '+str(cdat['correct'])+'/'+str(cdat['q_max'])+'문제 정답. (소요시간 : '+elap+')\n'
             userlist = cdat['correct_user']
             countlist = cdat['correct_cnt']
             if len(userlist) > 0:
                 countlist, userlist = zip(*sorted(zip(countlist, userlist), reverse=True))
                 for user in userlist:
                     if userlist.index(user) == 0:
-                        msg += ':trophy:  '+insert_dot(user) +': '+str(countlist[userlist.index(user)])+'문제\n'
+                        msg[0]['text'] += ':trophy:  '+insert_dot(user) +': '+str(countlist[userlist.index(user)])+'문제\n'
                     else:
-                        msg += ' '*9+insert_dot(user) +': '+str(countlist[userlist.index(user)])+'문제\n'
+                        msg[0]['text'] += ' '*9+insert_dot(user) +': '+str(countlist[userlist.index(user)])+'문제\n'
             os.remove(info_file)
             return channel, msg
         else:
-            msg += get_message(channel)
+            send_msg(robot, channel, attachments=msg)
+            time.sleep(1)
+            msg = get_message(channel)
     else:
         return channel, '진행중인 문제집이 없음. 자세한 사용법은...(`!도움 퀴즈`)'
     return channel, msg

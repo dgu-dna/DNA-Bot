@@ -8,9 +8,11 @@ BOT_NAME = settings.BOT_NAME
 ICON_URL = settings.ICON_URL
 
 
-def send_msg(robot, channel, message):
-	robot.client.api_call('chat.postMessage', username=BOT_NAME, as_user='false', icon_url=ICON_URL, channel=channel, text=message)
-
+def send_msg(robot, channel, message=None, attachments=None):
+    if attachments == None:
+        return robot.client.api_call('chat.postMessage', username=BOT_NAME, as_user='false', icon_url=ICON_URL, channel=channel, text=message)
+    else:
+        return robot.client.api_call('chat.postMessage', username=BOT_NAME, as_user='false', icon_url=ICON_URL, channel=channel, attachments=json.dumps(attachments))
 
 def cat_token(tokens, prefix):
     if(len(tokens) <= prefix):
@@ -26,6 +28,14 @@ def get_nickname(user):
     data = json.loads(response.read().decode('utf-8'))
     return str(data['user']['name'])
 
+def get_userinfo(user, arg):
+    url = 'https://slack.com/api/users.info?token='+WEB_API_TOKEN+'&user='+str(user)+'&pretty=1'
+    response = urllib.request.urlopen(url)
+    data = json.loads(response.read().decode('utf-8'))
+    if len(arg) == 1:
+        return data['user'][arg[0]]
+    else:
+        return data['user'][arg[0]][arg[1]]
 
 def isNumber(s):
     try:

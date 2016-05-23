@@ -6,10 +6,10 @@ import sys
 import os
 from subprocess import check_output
 import imp
+import json
 settings = imp.load_source('settings','./settings.py')
 BOT_NAME = settings.BOT_NAME
 ICON_URL = settings.ICON_URL
-#from settings import BOT_NAME, ICON_URL
 
 def send_msg(robot, channel, txt):
     try:
@@ -18,7 +18,7 @@ def send_msg(robot, channel, txt):
         robot.client.rtm_send_message(channel, message)
 
 @on_command(['$'])
-def run(robot, channel, tokens, user):
+def run(robot, channel, tokens, user, command):
     ''' '''
     rootuser = set(['U0SPF91EE', 'U0SPXF0Q7'])
     if len(tokens) < 1:
@@ -53,8 +53,6 @@ def run(robot, channel, tokens, user):
         subprocess.call(['./kill_nohup.sh'])
         sys.exit()
     if str(tokens[0]) == 'debug':
-        #if len(tokens) > 1 and tokens[1] == 'debug' :
-        #    subprocess.call(['./reboot.sh','debug'])
         if len(tokens) > 1:
             if str(tokens[1]) == 'on':
                 send_msg(robot, channel, '승규를 디버깅합니다...')
@@ -76,4 +74,24 @@ def run(robot, channel, tokens, user):
         elif str(tokens[1]) == 'status':
             send_msg(robot, channel, check_output(['git', 'status']))
             sys.exit()
+    if str(tokens[0]) == 'statistic':
+        msg = '현재 승규는...\n';
+        mem_json = json.loads(open('./apps/memo_cache/memo_cache.json').read())
+        mem_num = 0
+        for value in mem_json.values():
+            mem_num += len(value)
+        msg += str(len(mem_json.keys())) + '명이 기억시킨,\n'
+        msg += str(mem_num) + '개의 메모를 기억하고 있으며\n';
+        name_num = len(os.listdir('./apps/name_cache'))
+        msg += str(name_num) + '개의 단어를 기억하고 있고\n';
+        quiz_dir = './apps/quiz_cache/category/'
+        quiz_list = os.listdir(quiz_dir)
+        msg += str(len(quiz_list)) + '개의 문제집에 있는,\n';
+        quiz_num = 0
+        for quiz in quiz_list:
+            quiz_json = json.loads(open(quiz_dir+quiz).read())
+            quiz_num += quiz_json['q_num']
+        msg += str(quiz_num) + '개의 문제를 기억하고 있음.';
+        send_msg(robot, channel, msg)
+        sys.exit()
     sys.exit()

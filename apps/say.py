@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from apps.decorators import on_command
 from apps.slackutils import cat_token
+import re
 
 @on_command(['!말해'])
 def run(robot, channel, tokens, user, command):
@@ -12,5 +13,7 @@ def run(robot, channel, tokens, user, command):
             #msg = cat_token(tokens,1)
             return tokens[0][2:-1], msg
     msg = ' '.join(tokens)
+    msg = re.sub('[<>]', '', msg)
+    msg = re.sub(r'&lt;(.*)&gt;', r'<\1>', msg)
     #msg = cat_token(tokens,0)
     return channel, msg

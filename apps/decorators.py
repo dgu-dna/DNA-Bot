@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import re
 import traceback
 from functools import wraps
+import json
 import imp
 
 settings = imp.load_source('settings', './settings.py')
@@ -39,7 +40,10 @@ def on_command(commands):
                     channel, message = func(robot, channel, tokens, user, command)
                     if channel:
                         try:
-                            robot.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=channel,text=message)
+                            if type(message) == list:
+                                robot.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=channel, attachments=json.dumps(message))
+                            else:
+                                robot.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=channel,text=message)
                         except:
                             robot.client.rtm_send_message(channel, message)
                         return message

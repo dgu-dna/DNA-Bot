@@ -11,9 +11,9 @@ def run(robot, channel, tokens, user, command):
     msg = '사용법 오류'
     if len(tokens) > 1:
         user_name = get_nickname(user)
-        sec = eval(cat_token(tokens, 1))
+        sec = eval(tokens[0])
         noti_msg = user_name + ', ' + str(sec) + '초 후에 알려주겠음.'
         send_msg(robot, channel, noti_msg)
         time.sleep(sec)
-        msg = user_name + ', ' + cat_token(tokens, 1)
+        msg = '<@' + user + '>, ' + cat_token(tokens, 1)
     return channel, msg
