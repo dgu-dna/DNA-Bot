@@ -46,12 +46,12 @@ class Robot(object):
         self.apps, self.docs = self.load_apps()
 
     def load_apps(self):
-        docs = ['승규가 할 수 있는 것들이에요! >_<(새 기능 건의 환영)', '='*40]
+        docs = ['이런거 할 수 있음', '='*40]
         apps = {}
 
         for name in APPS:
-            app = import_module('apps.%s' % name)
-            if name != 'system':
+            app = import_module('apps.%s' % name[0])
+            if name[1]:
                 docs.append(
                   '   `%s` : %s' % ('`, `'.join(app.run.commands), app.run.__doc__)
                 )
