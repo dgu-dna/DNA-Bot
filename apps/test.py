@@ -36,21 +36,30 @@ def run(robot, channel, tokens, user, command):
     att = [
                             {
                                 "fallback": "Required plain-text summary of the attachment.",
-                                "color": "#FF0000",
-                                "pretext": "Optional text that appears above the attachment block",
-                                "author_name": "작성자",
-                                "author_link": "http://www.naver.com/",
+                                "color": "#6BB11A",
+                                "author_name": "동국대학교소비자생활협동조합",
+                                "author_link": "http://dgucoop.dongguk.ac.kr/",
                                 "author_icon": "http://feonfun.com/slack_api_logo_16.jpg",
-                                "title": "제목!",
+                                "title": "오늘의 학식입니다.",
                                 "title_link": "https://api.slack.com/",
-                                "text": "설명!",
-                                #"fields": [
-                                #    {
-                                #        "title": "필드 제목!",
-                                #        "value": "필드 설명?",
-                                #        "short": "false"
-                                #                                                                                                                        }
-                                #    ],
+                                "text": "음... 여기엔 뭘쓰지?",
+                                "fields": [
+                                    {
+                                        "title": "상록원",
+                                        "value": "백반:고등어\n일품:애비\n양식:통등심\n뚝배기:짜글이",
+                                        "short": "false"
+                                    },
+                                    {
+                                        "title": "아리수",
+                                        "value": "A코너:aa\nB코너:bbb",
+                                        "short": "false"
+                                    },
+                                    {
+                                        "title": "남산학사",
+                                        "value": "어어..\n음음\n....",
+                                        "short": "false"
+                                    },
+                                    ],
                                 "thumb_url": "http://feonfun.com/slack.jpg"
                                 }
                             ]
@@ -59,8 +68,8 @@ def run(robot, channel, tokens, user, command):
     #message_json = {"type": "message", "channel": channel, "text": '에에에엥?'}
     #robot.client.server.send_to_websocket(message_json)
     #result = robot.client.api_call('chat.postMessage',username='Cheer Up!',channel=channel,attachments=json.dumps(att))
-    msg = '주작'
-    result = robot.client.api_call('chat.postMessage',username='Cheer Up!',channel=channel,text='주작')
+    #msg = '주작'
+    #result = robot.client.api_call('chat.postMessage',username='Cheer Up!',channel=channel,text='주작')
     #msg = '바보!'
     #result = send_msg(robot, channel, msg)
     #time.sleep(5)
@@ -69,15 +78,15 @@ def run(robot, channel, tokens, user, command):
     #    msg += '작'
     #    result = robot.client.api_call('chat.update', ts=result['ts'], channel=channel, text=msg)
     #    time.sleep(1)
-    result = robot.client.api_call('im.open', user=user)
-    result = send_msg(robot, result['channel']['id'], 'I love you')
+    #result = robot.client.api_call('im.open', user=user)
+    #result = send_msg(robot, result['channel']['id'], 'I love you')
     #result = robot.client.api_call('files.upload', file=@README.md, filename='README.md', title='봇 설명!', initial_comment = '캬!', channels=channel)
-    print(result)
+    #print(result)
     #result =robot.client.server.send_to_websocket(json.dumps(attach_json))
     #print(result)
-    msg = ' '
-    msg += str(user)
-    return channel, msg
+    #msg = ' '
+    #msg += str(user)
+    return channel, att
 #{
 #    "type": "presence_change", 
 #    "user": "U0SPF91EE", 

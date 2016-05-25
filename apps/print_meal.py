@@ -3,12 +3,15 @@ from __future__ import unicode_literals
 from apps.decorators import on_command
 import re
 import copy
+import json
 import urllib
 from bs4 import BeautifulSoup
 from datetime import datetime
 from time import localtime, strftime
 
 DGUCOOP_URL = 'http://dgucoop.dongguk.ac.kr/store/store.php?w=4'
+DGUCOOP_ICON_URL = 'http://www.feonfun.com/coop_32.png'
+ATTACHMENTS_URL = './apps/attachments.json'
 ORIGINAL_INFO = {
                     0:
                     {
@@ -76,6 +79,13 @@ def run(robot, channel, tokens, user, command):
     '''학식 메뉴보여줌'''
     COURSE_INFO = copy.deepcopy(ORIGINAL_INFO)
     now_t = datetime.today().time()
+    attach = json.loads(open(ATTACHMENTS_URL).read())
+    attach['color'] = '#6BB11A'
+    attach['author_name'] = '동국대학교소비자생활협동조합'
+    attach['author_link'] = 'http://dgucoop.dongguk.ac.kr'
+    attach['author_icon'] = DGUCOOP_ICON_URL
+    attach['fallback'] = '오늘의  학식'
+    attach['fields'] = []
     course = {}
     print_course = ['상록원', '아리수', '남산학사']   # default
     is_lunch = now_t < now_t.replace(17, 0, 0, 0)   # dinner
@@ -112,9 +122,9 @@ def run(robot, channel, tokens, user, command):
 
     time_message = strftime('%m월 %d일(%a)', localtime())
     if is_lunch:
-        message = ':sunny: ' + time_message + '중식 :sunny:\n'
+        attach['title'] = ':sunny: ' + time_message + '중식 :sunny:\n'
     else:
-        message = ':star2: ' + time_message + '석식 :star2:\n'
+        attach['title'] = ':star2: ' + time_message + '석식 :star2:\n'
 
     html = urllib.request.urlopen(DGUCOOP_URL)
     soup = BeautifulSoup(html, 'lxml')
@@ -143,16 +153,22 @@ def run(robot, channel, tokens, user, command):
             menu.append(lunch)      # 점심
             menu.append(dinner)     # 저녁
             course[courseInfo['name']].append(menu)
+
     for pc in print_course:
-        message += '>*' + pc + '*\n'
+        field = {}
+        field['title'] = ':dongguk: ' + pc
+        field['short'] = False
+        field['value'] = ''
         if pc in course:
             for p in course[pc]:
                 if p[1 if is_lunch else 2]:
                     food = re.sub('\r\n', '\n', p[1 if is_lunch else 2])
                     food = ' || '.join(food.split('\n')) + '\n'
+                    #field['value'] += ':small_orange_diamond:'
                     if p[1] == p[2]:
                         if full_print:
-                            message += p[0] + ': ' + food
+                            field['value'] += p[0] + ': ' + food
                     else:
-                        message += p[0] + ': ' + food
-    return channel, message
+                        field['value'] += p[0] + ': ' + food
+        attach['fields'].append(field)
+    return channel, [attach]
