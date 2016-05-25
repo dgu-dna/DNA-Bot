@@ -10,7 +10,7 @@ import imp
 settings = imp.load_source('settings', './settings.py')
 BOT_NAME = settings.BOT_NAME
 ICON_URL = settings.ICON_URL
-#from settings import BOT_NAME, ICON_URL
+MESSAGE_CACHE_URL = './apps/message_cache/'
 
 TOKENIZE_PATTERN = re.compile(r'["“](.+?)["”]|(\S+)', re.U | re.S)
 
@@ -39,13 +39,16 @@ def on_command(commands):
                 try:
                     channel, message = func(robot, channel, tokens, user, command)
                     if channel:
+                        result = {}
                         try:
                             if type(message) == list:
-                                robot.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=channel, attachments=json.dumps(message))
+                                result = robot.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=channel, attachments=json.dumps(message))
                             else:
-                                robot.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=channel,text=message)
+                                result = robot.client.api_call('chat.postMessage',username=BOT_NAME, as_user='false',icon_url=ICON_URL,channel=channel,text=message)
                         except:
                             robot.client.rtm_send_message(channel, message)
+                        with open(MESSAGE_CACHE_URL + user + channel + '.json', 'w') as fp:
+                            json.dump(result, fp, indent=4)
                         return message
                     else:
                         print("[Warn] Couldn't delivered a message")
