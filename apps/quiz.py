@@ -188,7 +188,7 @@ def run(robot, channel, tokens, user, command):
         quizRaw = open(CACHE_CATEGORY_URL + cdat['category'] + '.json').read()
         qdat = json.loads(quizRaw)
         answer, hint = get_answer(channel)
-        msg = '정답은 `'+answer+'` '+hint+' (출제:'+quiz['user'][chan_info['q_num']-1][:1]+'·'+quiz['user'][chan_info['q_num']-1][1:]+')\n'
+        msg = '정답은 `'+answer+'` '+hint+' (출제:'+qdat['user'][cdat['q_num']-1][:1]+'·'+qdat['user'][cdat['q_num']-1][1:]+')\n'
         get_random_question(channel)
         msg += get_message(channel)
     else:
