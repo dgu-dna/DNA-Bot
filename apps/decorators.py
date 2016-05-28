@@ -12,7 +12,7 @@ BOT_NAME = settings.BOT_NAME
 ICON_URL = settings.ICON_URL
 MESSAGE_CACHE_URL = './apps/message_cache/'
 
-TOKENIZE_PATTERN = re.compile(r'["“](.+?)["”]|(\S+)', re.U | re.S)
+TOKENIZE_PATTERN = re.compile(r'["“](.+?)["”]|(\n\s*\S+)|(\S+)', re.U | re.S)
 
 
 def _extract_tokens(message):
