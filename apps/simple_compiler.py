@@ -11,12 +11,12 @@ def run(robot, channel, tokens, user, command):
     msg = ''
     if len(tokens) < 2:
         return channel, '자세한 사용방법은...'
+    tokens[0] = tokens[0].strip()
     if tokens[0].lower() in ['c', 'c++']:
         source = cat_token(tokens, 1)
         source = re.sub('&amp;', '&', source)
         source = re.sub('&lt;', '<', source)
         source = re.sub('&gt;', '>', source)
-        source = re.sub(r'(#.*>)', r'\1\n', source)
         if tokens[0].lower() == 'c':
             open(user + '.c', 'w').write(source)
             msg += check_output(['gcc', user + '.c', '-o', user + '.out']).decode('utf-8')
@@ -35,5 +35,20 @@ def run(robot, channel, tokens, user, command):
             msg += '> :warning: WARNING : Your program returned exit status `' + str(e.args[0]) +'`\n'
             msg += e.output.decode('utf-8')
         os.remove(user + '.out')
+    if tokens[0].lower() in ['python', 'python3']:
+        source = cat_token(tokens, 1)
+        source = re.sub('&amp;', '&', source)
+        source = re.sub('&lt;', '<', source)
+        source = re.sub('&gt;', '>', source)
+        open(user + '.py', 'w').write(source)
+        try:
+            if tokens[0].lower() == 'python':
+                msg += check_output(['python',user + '.py'], stderr=STDOUT).decode('utf-8')
+            else:
+                msg += check_output(['python3',user + '.py'], stderr=STDOUT).decode('utf-8')
+        except CalledProcessError as e:
+            msg += e.output.decode('utf-8')
+            return channel, msg
+        os.remove(user + '.py')
     return channel, msg
 
