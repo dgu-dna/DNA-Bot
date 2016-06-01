@@ -2,8 +2,8 @@ from importlib import import_module
 import json
 import re
 
-USER = U01234567
-CHANNEL = C01234567
+USER = 'U01234567'
+CHANNEL = 'C01234567'
 
 
 class Client(object):
