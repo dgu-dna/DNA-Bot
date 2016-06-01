@@ -29,7 +29,11 @@ def run(robot, channel, tokens, user, command):
             wdat[token] += 1
             with open(CACHE_DEFAULT_URL, 'w') as fp:
                 json.dump(wdat, fp, indent=4)
-            word.append(token)
+            if token in word:
+                msg = '중복 단어 입력 (' + token + ')'
+                return channel, msg
+            else:
+                word.append(token)
         else:
             non_word.append(token)
     if word:
