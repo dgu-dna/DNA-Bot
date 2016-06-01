@@ -24,6 +24,14 @@ def run(robot, channel, tokens, user, command):
     if len(tokens[0]) < 2:
         msg = '두 글자 이상의 단어만 가능함'
         return channel, msg
+    if tokens[0] == '포기할래'
+        if os.path.exists(CACHE_DEFAULT_URL):
+            os.remove(CACHE_DEFAULT_URL)
+            msg = 'ㅎㅎ 내가이김'
+            return channel, msg
+        else:
+            msg = '시작한것도 없음'
+            return channel, msg
     if not is_koreanword(tokens[0]):
         msg = '단어가 아님'
         return channel, msg
