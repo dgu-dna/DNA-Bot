@@ -13,9 +13,12 @@ def run(robot, channel, tokens, user, command):
     if len(tokens) < 1:
         return channel, msg
     msg = ''
+    word = []
+    non_word = []
+    one_word = []
     for token in tokens:
         if len(token) < 2:
-            msg += '두 글자 이상의 단어만 가능함 (' + token + ')\n'
+            one_word.append(token)
             continue
         if is_koreanword(token):
             wdat = {}
@@ -26,7 +29,13 @@ def run(robot, channel, tokens, user, command):
             wdat[token] += 1
             with open(CACHE_DEFAULT_URL, 'w') as fp:
                 json.dump(wdat, fp, indent=4)
-            msg += token + ' 은(는) 단어임\n'
+            word.append(token)
         else:
-            msg += token + ' 은(는) 단어가 아님\n'
+            non_word.append(token)
+    if word:
+        msg += str(word) + '은(는) 단어임\n'
+    if non_word:
+        msg += str(non_word) + '은(는) 단어가 아님\n'
+    if one_word:
+        msg += str(one_word) + '은(는) 너무 짧음'
     return channel, msg
