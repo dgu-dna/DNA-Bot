@@ -1,7 +1,12 @@
 # -*- encoding: utf-8 -*-
-import urllib
+from urllib.request import urlopen, quote
+from bs4 import BeautifulSoup
 import json
 import imp
+import re
+
+
+NAVER_DICTIONARY_URL = 'http://krdic.naver.com/search.nhn?query=%s&kind=keyword'
 settings = imp.load_source('settings', './settings.py')
 WEB_API_TOKEN = settings.WEB_API_TOKEN
 BOT_NAME = settings.BOT_NAME
@@ -24,13 +29,13 @@ def insert_dot(msg):
 
 def get_nickname(user):
     url = 'https://slack.com/api/users.info?token='+WEB_API_TOKEN+'&user='+str(user)+'&pretty=1'
-    response = urllib.request.urlopen(url)
+    response = urlopen(url)
     data = json.loads(response.read().decode('utf-8'))
     return str(data['user']['name'])
 
 def get_userinfo(user, arg):
     url = 'https://slack.com/api/users.info?token='+WEB_API_TOKEN+'&user='+str(user)+'&pretty=1'
-    response = urllib.request.urlopen(url)
+    response = urlopen(url)
     data = json.loads(response.read().decode('utf-8'))
     if len(arg) == 1:
         return data['user'][arg[0]]
@@ -43,3 +48,16 @@ def isNumber(s):
         return True
     except ValueError:
         return False
+
+
+def is_koreanword(word):
+    is_word = False
+    html = urlopen(quote((NAVER_DICTIONARY_URL % word).encode('utf-8'), '/:&?='))
+    soup = BeautifulSoup(html, 'html.parser')
+    s = soup.find_all('a', {'class': 'fnt15'})
+    if s:
+        for ss in s:
+            if re.sub(r'[^가-힣]', '', str(ss)) == word:
+                is_word = True
+                break
+    return is_word
