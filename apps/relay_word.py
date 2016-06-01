@@ -10,8 +10,14 @@ CACHE_DEFAULT_URL = './apps/game_cache/relay_word.json'
 def get_startword(word):
     start_word = [word[-1]]
     ch = ord(word[-1]) - 0xAC00
-    if ch // (21 * 28) == 5:
-        start_word.append(chr(ch + 0xAC00 + 6*21*28))
+    choseong = ch // (21 * 28)
+    if choseong == 5:
+        start_word.append(chr(ch + 0xAC00 - 3*21*28))
+    ch = ord(start_word[-1]) - 0xAC00
+    choseong = ch // (21*28)
+    jungseong = ch % (21*28) // 28
+    if choseong == 2 and jungseong in [2, 6, 12, 17, 20]:
+        start_word.append(chr(ch + 0xAC00 + 9*21*28))
     return start_word
 
 
@@ -24,7 +30,7 @@ def run(robot, channel, tokens, user, command):
     if len(tokens[0]) < 2:
         msg = '두 글자 이상의 단어만 가능함'
         return channel, msg
-    if tokens[0] == '포기할래'
+    if tokens[0] == '포기할래':
         if os.path.exists(CACHE_DEFAULT_URL):
             os.remove(CACHE_DEFAULT_URL)
             msg = 'ㅎㅎ 내가이김'
