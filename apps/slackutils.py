@@ -55,9 +55,19 @@ def is_koreanword(word):
     html = urlopen(quote((NAVER_DICTIONARY_URL % word).encode('utf-8'), '/:&?='))
     soup = BeautifulSoup(html, 'html.parser')
     s = soup.find_all('a', {'class': 'fnt15'})
-    if s:
-        for ss in s:
-            if re.sub(r'[^가-힣]', '', str(ss)) == word:
+    t = soup.find_all('ul', {'class': 'lst3'})
+    t = t[0].find_all('li')
+
+    del_list = []
+    for idx, val in enumerate(t):
+        if val.p is None:
+            del_list.append(idx)
+    for idx in reversed(del_list):
+        del t[idx]
+
+    if s and t:
+        for ss, tt in list(zip(s, t)):
+            if re.sub(r'[^가-힣]', '', str(ss)) == word and tt.p.text[1:3] == '명사':
                 is_word = True
                 break
     return is_word
