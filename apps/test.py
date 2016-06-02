@@ -8,6 +8,7 @@ import json
 @on_command(['테스팅'])
 def run(robot, channel, tokens, user, command):
     '''디버깅용 기능입니다'''
+    return channel, channel + ' ' + user
     attach_json = {
             "type": "message",
             "attachments": [

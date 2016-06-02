@@ -1,7 +1,10 @@
 # coding: utf-8
 from __future__ import unicode_literals
+import re
 import os
 import sys
+import json
+import glob
 import gevent
 import logging
 from gevent.pool import Pool
@@ -103,6 +106,24 @@ class Robot(object):
             while True:
                 events = self.client.rtm_read()
                 if events:
+                    r = re.compile(r'./apps/request_cache/(.*)')
+                    request_list = glob.glob('./apps/request_cache/REQUEST_*.req')
+                    #request_list = list(map(lambda s: r.sub(r'\1', s), f_list))
+                    if request_list:
+                        for e in events:
+                            for req in request_list:
+                                req_json = json.loads(open(req).read())
+                                t = req_json['type']
+                                c = req_json['channel']
+                                u = req_json['user']
+                                t_ = e.get('type', '')
+                                u_ = e.get('user', '')
+                                c_ = e.get('channel', '')
+                                if t == t_ and c == c_ and u == u_:
+                                    fname = re.sub(r'REQUEST_(.*).req', r'\1', req)
+                                    with open(fname, 'w') as fp:
+                                        json.dump(events, fp, indent=4)
+                                    os.remove(req)
                     messages = self.extract_messages(events)
                     self.handle_messages(messages)
                 gevent.sleep(0.3)
