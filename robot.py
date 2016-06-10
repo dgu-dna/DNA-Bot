@@ -5,6 +5,7 @@ import os
 import sys
 import json
 import glob
+import random
 import gevent
 import logging
 from gevent.pool import Pool
@@ -124,6 +125,18 @@ class Robot(object):
                                     with open(fname, 'w') as fp:
                                         json.dump(events, fp, indent=4)
                                     os.remove(req)
+                    msg = ''
+                    n = random.randrange(0,100)
+                    print(n)
+                    if n < 3:
+                        notice = open('./notice.txt').read().split('\n')
+                        print(notice)
+                        msg = random.choice(notice)
+                        print(msg)
+                        channel = ''
+                        channel = events[0].get('channel','')
+                        print(channel)
+                        self.client.api_call('chat.postMessage',username='윤승규', as_user='false',icon_url=ICON_URL,channel=channel,text=msg)
                     messages = self.extract_messages(events)
                     self.handle_messages(messages)
                 gevent.sleep(0.3)
