@@ -1,10 +1,52 @@
 from apps.decorators import on_command
-from apps.slackutils import is_koreanword
+from apps.slackutils import is_koreanword, get_nickname, get_realname
 import random
 import json
 import os
 WORD_DEFAULT_URL = './apps/game_cache/relay.json'
 CACHE_DEFAULT_URL = './apps/game_cache/relay_word.json'
+RANK_DEFAULT_URL = './apps/game_cache/rank.json'
+
+def save_rank(user, score):
+    rdat = {}
+    if os.path.exists(RANK_DEFAULT_URL):
+        rdat = json.loads(open(RANK_DEFAULT_URL).read())
+    if user in rdat:
+        if 'relay_word' in rdat[user]:
+            if rdat[user]['relay_word'] < score:
+                rdat[user]['relay_word'] = score
+        else:
+            rdat[user]['relay_word'] = score
+    else:
+        rdat[user] = {'relay_word': score}
+    with open(RANK_DEFAULT_URL, 'w') as fp:
+        json.dump(rdat, fp, indent=4)
+
+def get_highest_rank():
+    score = -1
+    name = None
+    if os.path.exists(RANK_DEFAULT_URL):
+        rdat = json.loads(open(RANK_DEFAULT_URL).read())
+        if rdat:
+            for user in rdat.keys():
+                if 'relay_word' in rdat[user]:
+                    if rdat[user]['relay_word'] > score:
+                        score = rdat[user]['relay_word']
+                        if user == 'bot':
+                            name = '승규'
+                        else:
+                            name = get_realname(user)
+                    #if rdat[user]['relay_word'] == score:
+    return name, score
+
+
+def add_score(user, jsdat):
+    if 'user' not in jsdat:
+        jsdat['user'] = {}
+    if user in jsdat['user']:
+        jsdat['user'][user] += 1
+    else:
+        jsdat['user'][user] = 1
 
 
 def get_startword(word):
@@ -24,6 +66,7 @@ def get_startword(word):
 @on_command(['!끝말', '!ㄲㅁ'])
 def run(robot, channel, tokens, user, command):
     ''''''
+    json_file = CACHE_DEFAULT_URL + '_' + channel
     msg = '단어를 말해야...'
     if len(tokens) < 1:
         return channel, msg
@@ -31,9 +74,21 @@ def run(robot, channel, tokens, user, command):
         msg = '두 글자 이상의 단어만 가능함'
         return channel, msg
     if tokens[0] == '포기할래':
-        if os.path.exists(CACHE_DEFAULT_URL):
-            os.remove(CACHE_DEFAULT_URL)
-            msg = 'ㅎㅎ 내가이김'
+        if os.path.exists(json_file):
+            game_info = json.loads(open(json_file).read())
+            score = game_info['score']
+            os.remove(json_file)
+            save_rank('bot', score)
+            msg = 'ㅎㅎ 내가이김. (승규의 점수: ' + str(score) + ')\n'
+            rank_msg = '\n'
+            if 'user' in game_info:
+                for user, score in game_info['user'].items():
+                    rank_msg += get_nickname(user) + ' : ' + str(score) + '점\n'
+            rank_msg += '(패배시에는 점수가 반영되지 않음)\n'
+            top_name, top_score = get_highest_rank()
+            if top_name:
+                msg += '> :crown: 끝말잇기의 달인 : ' + top_name + ' (' + str(top_score) + '점)'
+            msg += rank_msg
             return channel, msg
         else:
             msg = '시작한것도 없음'
@@ -52,17 +107,19 @@ def run(robot, channel, tokens, user, command):
     msg = ''
     game_info = {}
     word_info = json.loads(open(WORD_DEFAULT_URL).read())
-    if os.path.exists(CACHE_DEFAULT_URL):
-        game_info = json.loads(open(CACHE_DEFAULT_URL).read())
+    if os.path.exists(json_file):
+        game_info = json.loads(open(json_file).read())
         if tokens[0] in game_info['used_word']:
             msg = '이미 썼던 단어임'
             return channel, msg
         if tokens[0][0] not in game_info['start_word']:
             msg = '끝말잇기를 해야지! (현재 단어: ' + game_info['last_word'] + ')'
             return channel, msg
+        add_score(user, game_info)
         game_info['used_word'].append(tokens[0])
     else:
         msg += '새로운 끝말잇기를 시작함\n'
+        add_score(user, game_info)
         game_info['used_word'] = [tokens[0]]
     start_word = get_startword(tokens[0])
     candidate_word = []
@@ -72,16 +129,28 @@ def run(robot, channel, tokens, user, command):
             for i in range(word_info[word]):
                 candidate_word.append(word)
     if candidate_word:
-        print(candidate_word)
         my_word = random.choice(candidate_word)
         game_info['last_word'] = my_word
         game_info['used_word'].append(my_word)
         game_info['start_word'] = get_startword(my_word)
-        with open(CACHE_DEFAULT_URL, 'w') as fp:
+        if 'score' in game_info:
+            game_info['score'] += 1
+        else:
+            game_info['score'] = 1
+        with open(json_file, 'w') as fp:
             json.dump(game_info, fp, indent=4)
         msg += my_word
     else:
-        msg += '내가 짐\n'
-        if os.path.exists(CACHE_DEFAULT_URL):
-            os.remove(CACHE_DEFAULT_URL)
+        msg += '내가 짐.\n'
+        rank_msg = '\n'
+        if 'user' in game_info:
+            for user, score in game_info['user'].items():
+                rank_msg += get_nickname(user) + ' : ' + str(score) + '점\n'
+                save_rank(user, score)
+        top_name, top_score = get_highest_rank()
+        if top_name:
+            msg += '> :crown: 끝말잇기의 달인 : ' + top_name + ' (' + str(top_score) + '점)'
+        msg += rank_msg
+        if os.path.exists(json_file):
+            os.remove(json_file)
     return channel, msg

@@ -83,7 +83,7 @@ def run(robot, channel, tokens, user, command):
         msg += str(len(mem_json.keys())) + '명이 기억시킨,\n'
         msg += str(mem_num) + '개의 메모를 기억하고 있으며\n';
         name_num = len(os.listdir('./apps/name_cache'))
-        msg += str(name_num) + '개의 단어를 기억하고 있고\n';
+        msg += str(name_num) + '개의 단어 뜻을 기억하고 있고\n';
         quiz_dir = './apps/quiz_cache/category/'
         quiz_list = os.listdir(quiz_dir)
         msg += str(len(quiz_list)) + '개의 문제집에 있는,\n';
@@ -91,7 +91,11 @@ def run(robot, channel, tokens, user, command):
         for quiz in quiz_list:
             quiz_json = json.loads(open(quiz_dir+quiz).read())
             quiz_num += quiz_json['q_num']
-        msg += str(quiz_num) + '개의 문제를 기억하고 있음.';
+        msg += str(quiz_num) + '개의 문제를 기억하고 있고\n';
+        word_dir = './apps/game_cache/'
+        word_json = json.loads(open(word_dir + 'relay.json').read())
+        word_num = len(word_json.keys())
+        msg += str(word_num) + '개의 단어 자체를 기억하고 있음.'
         send_msg(robot, channel, msg)
         sys.exit()
     sys.exit()

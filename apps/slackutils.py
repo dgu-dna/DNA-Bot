@@ -33,6 +33,14 @@ def get_nickname(user):
     data = json.loads(response.read().decode('utf-8'))
     return str(data['user']['name'])
 
+
+def get_realname(user):
+    url = 'https://slack.com/api/users.info?token='+WEB_API_TOKEN+'&user='+str(user)+'&pretty=1'
+    response = urlopen(url)
+    data = json.loads(response.read().decode('utf-8'))
+    return str(data['user']['profile']['last_name']) + ' ' + str(data['user']['profile']['first_name'])
+
+
 def get_userinfo(user, arg):
     url = 'https://slack.com/api/users.info?token='+WEB_API_TOKEN+'&user='+str(user)+'&pretty=1'
     response = urlopen(url)
@@ -55,7 +63,11 @@ def is_koreanword(word):
     html = urlopen(quote((NAVER_DICTIONARY_URL % word).encode('utf-8'), '/:&?='))
     soup = BeautifulSoup(html, 'html.parser')
     s = soup.find_all('a', {'class': 'fnt15'})
+    if not s:
+        return is_word
     t = soup.find_all('ul', {'class': 'lst3'})
+    if not t:
+        return is_word
     t = t[0].find_all('li')
 
     del_list = []
@@ -67,7 +79,8 @@ def is_koreanword(word):
 
     if s and t:
         for ss, tt in list(zip(s, t)):
-            if re.sub(r'[^가-힣]', '', str(ss)) == word and tt.p.text[1:3] == '명사':
+            #if re.sub(r'[^가-힣]', '', str(ss)) == word and tt.p.text[1:3] == '명사':
+            if tt.div.a.strong and tt.div.a.strong.string == word and tt.p.text[1:3] == '명사':
                 is_word = True
                 break
     return is_word

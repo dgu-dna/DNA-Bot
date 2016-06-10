@@ -114,6 +114,9 @@ def run(robot, channel, tokens, user, command):
                                 return channel, '이미 등록된 학번인데....?'
                     else:
                         return channel, '소스에서 학번을 찾을 수 없는데...?'
+                    source = re.sub('&amp;', '&', source)
+                    source = re.sub('&lt;', '<', source)
+                    source = re.sub('&gt;', '>', source)
                     with open(SOURCE_DEFAULT_URL + name + '.cpp', 'w') as fp:
                         fp.write(source)
                     break
@@ -137,6 +140,9 @@ def run(robot, channel, tokens, user, command):
                 os.remove(CACHE_DEFAULT_URL + 'ARENA')
                 e = e[0]
                 if e['text'] == '끝':
+                    source = re.sub('&amp;', '&', source)
+                    source = re.sub('&lt;', '<', source)
+                    source = re.sub('&gt;', '>', source)
                     with open(SOURCE_DEFAULT_URL + name + '.h', 'w') as fp:
                         fp.write(source)
                     break
@@ -222,7 +228,6 @@ def run(robot, channel, tokens, user, command):
             return channel, msg
         if user2 not in info:
             msg = '상대방이 소스등록을 안했음! `!대전 등록`'
-            msg += user2
             return channel, msg
         if not info[user2]['battle_when_absence']:
             user2_presence = True
