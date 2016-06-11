@@ -134,11 +134,12 @@ def run(robot, channel, tokens, user, command):
         if course_idx not in COURSE_INFO:
             continue
         if remove_noise(str(course_val)) == '휴무':
+            new_COURSE = {}
             for key in COURSE_INFO.keys():
                 if key > course_idx:
                     cnt = COURSE_INFO[course_idx]['cnt']
-                    COURSE_INFO[key - cnt] = COURSE_INFO[key]
-                    del COURSE_INFO[key]
+                    new_COURSE[key - cnt] = COURSE_INFO[key]
+            COURSE_INFO = new_COURSE
             continue
         courseInfo = COURSE_INFO[course_idx]
         course[courseInfo['name']] = []     # course['상록원']
